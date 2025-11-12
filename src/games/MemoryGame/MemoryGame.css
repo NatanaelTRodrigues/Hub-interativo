@@ -1,0 +1,148 @@
+.memory-game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinha no topo */
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #fff;
+  padding-top: 2rem;
+  position: relative;
+}
+
+.memory-game-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #4d90fe;
+}
+
+/* Reutiliza o estilo de seletor do Jogo da Velha */
+.difficulty-selector.memory {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 10px;
+}
+.difficulty-selector.memory button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  background-color: #333;
+  border: 2px solid #555;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+.difficulty-selector.memory button:hover {
+  background-color: #444;
+  border-color: #777;
+}
+.difficulty-selector.memory button.active {
+  background-color: #2f9e44;
+  border-color: #2f9e44; /* Verde */
+  color: #fff;
+  font-weight: bold;
+}
+
+.memory-game-stats {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.memory-game-stats strong {
+  color: #ffd700;
+}
+
+/* --- Tabuleiro (Board) --- */
+.memory-board {
+  display: grid;
+  gap: 10px;
+  perspective: 1000px; /* Habilita o 3D para a animação de virar */
+}
+
+/* Layouts de grid por dificuldade */
+.memory-board.easy {
+  grid-template-columns: repeat(4, 100px); /* 4x2 */
+}
+.memory-board.medium {
+  grid-template-columns: repeat(4, 100px); /* 4x3 */
+}
+.memory-board.hard {
+  grid-template-columns: repeat(5, 100px); /* 5x4 */
+}
+.memory-board.impossible {
+  grid-template-columns: repeat(6, 100px); /* 6x5 */
+}
+
+/* --- A Carta --- */
+.card {
+  width: 100px;
+  height: 140px;
+  position: relative;
+  transform-style: preserve-3d; /* Permite o efeito 3D */
+  transition: transform 0.6s;
+  cursor: pointer;
+}
+
+/* Quando a carta está virada, ela gira 180 graus */
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* Esconde a face de trás */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Costas da carta (o que se vê no início) */
+.card-back {
+  background-color: #4d90fe;
+  color: #fff;
+  font-size: 5rem;
+  line-height: 1;
+}
+
+/* Frente da carta (o emoji, escondido no início) */
+.card-front {
+  background-color: #e0e0e0;
+  color: #333;
+  transform: rotateY(180deg); /* Já começa girado */
+}
+
+/* Estilo para cartas que já são pares */
+.card.flipped.matched {
+  /* Pode-se adicionar um brilho ou borda verde */
+  box-shadow: 0 0 15px 5px #2f9e44;
+}
+
+/* --- Tela de Vitória --- */
+.game-won-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(26, 26, 26, 0.9);
+  padding: 3rem;
+  border-radius: 15px;
+  margin-top: 2rem;
+}
+
+.game-won-overlay h2 {
+  font-size: 2rem;
+  color: #ffd700;
+  margin-bottom: 2rem;
+}
+
+/* Reutiliza o botão do jogo da velha */
+.game-won-overlay .restart-button {
+  margin-top: 0;
+}

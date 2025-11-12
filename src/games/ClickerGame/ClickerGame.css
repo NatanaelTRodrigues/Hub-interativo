@@ -1,0 +1,103 @@
+.clicker-game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 2rem;
+  text-align: center;
+}
+
+.clicker-game-title {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #4d90fe;
+}
+
+.clicker-instructions {
+  font-size: 1.2rem;
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+.clicker-game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  height: 300px;
+  background-color: #121212;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.clicker-timer {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.clicker-timer span {
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 2.5rem;
+}
+
+/* --- Botão Principal --- */
+.clicker-button {
+  width: 250px;
+  height: 100px;
+  border: none;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Efeito de clique */
+.clicker-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Estado: Setup (Começar) */
+.clicker-button.setup {
+  background-color: #2f9e44; /* Verde */
+}
+.clicker-button.setup:hover {
+  background-color: #2b8a3e;
+}
+
+/* Estado: Playing (Clique!) */
+.clicker-button.playing {
+  background-color: #c92a2a; /* Vermelho */
+}
+.clicker-button.playing:hover {
+  background-color: #a61e1e;
+}
+
+/* Estado: Result (Jogar Novamente) */
+.clicker-button.result {
+  background-color: #1971c2; /* Azul */
+}
+.clicker-button.result:hover {
+  background-color: #1864ab;
+}
+
+/* --- Resultado --- */
+.clicker-result {
+  margin-top: 1.5rem;
+}
+.clicker-result h3 {
+  font-size: 1.3rem;
+  color: #ffd700;
+}
+/* Muda a cor se a recompensa for negativa */
+.clicker-result h3:has(strong.negative) {
+  color: #ff8787;
+}

@@ -1,0 +1,183 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #fff;
+  overflow: hidden; /* Evita barras de rolagem estranhas */
+}
+
+.game-title {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #4d90fe;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+  background-color: #333;
+  border: 5px solid #333;
+  border-radius: 8px;
+}
+
+.square {
+  width: 100px;
+  height: 100px;
+  background-color: #1f1f1f;
+  border: none;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.square:hover {
+  background-color: #2a2a2a;
+}
+
+/* Estiliza o 'X' e 'O' */
+.square:empty {
+  color: #fff;
+}
+.square:not(:empty) {
+  animation: fadeIn 0.3s ease;
+}
+.square:not(:empty):first-letter {
+  color: #ff6b6b; /* Cor para o 'X' */
+}
+.square:not(:empty):last-letter {
+  color: #4d90fe; /* Cor para o 'O' */
+}
+
+.restart-button {
+  margin-top: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #121212;
+  background-color: #4d90fe;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.restart-button:hover {
+  background-color: #3a7bd5;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- ESTILOS DOS NOVOS COMPONENTES --- */
+
+.coin-display {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffd700;
+  background-color: #2a2a2a;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.game-mode-selector,
+.difficulty-selector {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 10px;
+}
+
+.game-mode-selector button,
+.difficulty-selector button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  background-color: #333;
+  border: 2px solid #555;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.game-mode-selector button:hover,
+.difficulty-selector button:hover {
+  background-color: #444;
+  border-color: #777;
+}
+
+/* Botão de MODO ativo */
+.game-mode-selector button.active {
+  background-color: #4d90fe;
+  border-color: #4d90fe;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Botão de DIFICULDADE ativo */
+.difficulty-selector button.active {
+  background-color: #ff6b6b;
+  border-color: #ff6b6b;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Botão BLOQUEADO */
+.difficulty-selector button:disabled {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.difficulty-selector button:disabled:hover {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.game-mode-display {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #aaa;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* --- ESTILOS DE STATUS (CORRIGIDOS) --- */
+.game-status {
+  height: 40px; /* Altura fixa */
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0 1rem;
+  text-align: center;
+  transition: color 0.5s ease;
+}
+
+.game-status.normal-status {
+  color: #fff; /* Cor do status normal */
+}
+
+.game-status.reward-status {
+  color: #ffd700; /* Cor da recompensa */
+  animation: fadeIn 0.5s ease;
+}

@@ -1,0 +1,134 @@
+/* Reset básico e fontes */
+
+.homepage-container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ===== Header ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1f1f1f;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4d90fe; /* Um azul "tech" */
+  cursor: pointer;
+  user-select: none; /* Impede seleção de texto ao clicar rápido */
+}
+
+.navbar a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: #e0e0e0;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #4d90fe;
+}
+
+/* ===== Seções Padrão ===== */
+.section {
+  padding: 4rem 2rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.section h2 {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.content-box {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.content-box p,
+.content-box li {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+/* ===== Seção de Jogos ===== */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+.game-card {
+  background-color: #2a2a2a;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  background-color: #4d90fe;
+  color: #121212;
+}
+
+.btn-cta {
+  display: block;
+  width: fit-content;
+  margin: 2rem auto 0;
+  padding: 0.8rem 1.5rem;
+  background-color: #4d90fe;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-cta:hover {
+  background-color: #3a7bd5;
+}
+
+/* ===== Rodapé ===== */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  background-color: #1f1f1f;
+  border-top: 1px solid #333;
+}
+
+.social-links {
+  margin-top: 1rem;
+}
+
+.social-links a {
+  margin: 0 1rem;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #4d90fe;
+}

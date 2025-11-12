@@ -1,0 +1,146 @@
+.reaction-game-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #121212;
+  color: #fff;
+  padding: 2rem;
+  gap: 2rem;
+  box-sizing: border-box; /* Garante que o padding não estoure */
+}
+
+/* Caixa principal do jogo */
+.reaction-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reaction-box {
+  width: 90%;
+  max-width: 800px;
+  height: 500px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.reaction-message {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.reaction-time {
+  font-size: 4rem;
+  color: #fff;
+  margin: 0;
+}
+
+.coin-result {
+  font-size: 1.5rem;
+  color: #ffd700;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+/* Cor para moedas ganhas (na tela principal) */
+.coin-result.positive {
+  color: #ffd700; /* Amarelo/Ouro */
+}
+
+/* Cor para moedas perdidas (na tela principal) */
+.coin-result.negative {
+  color: #ff8787; /* Vermelho claro */
+}
+
+/* Ajuste no placar lateral (ranking) */
+.reaction-ranking li .coins-plus {
+  color: #ffd700;
+  font-weight: bold;
+}
+.reaction-ranking li .coins-minus {
+  color: #c92a2a; /* Vermelho escuro */
+  font-weight: bold;
+}
+
+/* --- ESTADOS DO JOGO (Cores) --- */
+
+.reaction-box.waiting {
+  background-color: #c92a2a; /* Vermelho */
+  border: 5px solid #a61e1e;
+}
+.reaction-box.waiting:hover {
+  background-color: #e03131;
+}
+
+.reaction-box.ready {
+  background-color: #e8590c; /* Laranja */
+  border: 5px solid #c94c0a;
+  cursor: not-allowed;
+}
+
+.reaction-box.go {
+  background-color: #2f9e44; /* Verde */
+  border: 5px solid #2b8a3e;
+}
+
+.reaction-box.result {
+  background-color: #1971c2; /* Azul */
+  border: 5px solid #1864ab;
+}
+
+/* --- Ranking Lateral --- */
+.reaction-ranking {
+  flex-shrink: 0; /* Não encolhe */
+  width: 300px;
+  height: 500px;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.reaction-ranking h3 {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+.reaction-ranking ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reaction-ranking li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.reaction-ranking li span:first-child {
+  font-weight: 500;
+}
+
+.reaction-ranking li .coins-plus {
+  color: #ffd700;
+  font-weight: bold;
+}
+.reaction-ranking li .coins-minus {
+  color: #c92a2a;
+  font-weight: bold;
+}
