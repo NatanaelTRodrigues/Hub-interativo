@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./MemoryGame.css"; // Vamos criar este arquivo
+import "./MemoryGame.css";
+import { useApp } from "../../contexts/AppContext"; // 1. Importar
 
-// --- Configuração das Dificuldades ---
+// ... (Configuração de EMOJI_DECK, DIFFICULTIES, etc. não muda) ...
 const EMOJI_DECK = [
   "🐶",
   "🐱",
@@ -29,15 +30,12 @@ const EMOJI_DECK = [
   "🦓",
   "🦒",
 ];
-
 const DIFFICULTIES = {
-  easy: { pairs: 4, label: "Fácil", reward: 10 }, // 8 cartas
-  medium: { pairs: 6, label: "Médio", reward: 20 }, // 12 cartas
-  hard: { pairs: 10, label: "Difícil", reward: 40 }, // 20 cartas
-  impossible: { pairs: 15, label: "Impossível", reward: 80 }, // 30 cartas
+  easy: { pairs: 4, label: "Fácil", reward: 10 },
+  medium: { pairs: 6, label: "Média", reward: 20 },
+  hard: { pairs: 10, label: "Difícil", reward: 40 },
+  impossible: { pairs: 15, label: "Impossível", reward: 80 },
 };
-
-// Função para embaralhar o deck (Fisher-Yates shuffle)
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -46,8 +44,6 @@ const shuffleArray = (array) => {
   }
   return newArray;
 };
-
-// Função para gerar o deck
 const generateDeck = (pairCount) => {
   const selectedEmojis = EMOJI_DECK.slice(0, pairCount);
   const deck = [...selectedEmojis, ...selectedEmojis];
@@ -59,36 +55,29 @@ const generateDeck = (pairCount) => {
     isMatched: false,
   }));
 };
+// ... (Fim da Configuração) ...
 
 const MemoryGame = () => {
-  // --- Estados do Jogo ---
   const [difficulty, setDifficulty] = useState("easy");
   const [cards, setCards] = useState(generateDeck(DIFFICULTIES.easy.pairs));
-  const [flippedCards, setFlippedCards] = useState([]); // Cartas viradas (max 2)
-  const [matchedCards, setMatchedCards] = useState([]); // Pares encontrados
+  const [flippedCards, setFlippedCards] = useState([]);
+  const [matchedCards, setMatchedCards] = useState([]);
   const [moves, setMoves] = useState(0);
-  const [isChecking, setIsChecking] = useState(false); // Trava o clique enquanto checa
-  const [gameState, setGameState] = useState("playing"); // 'playing', 'won'
+  const [isChecking, setIsChecking] = useState(false);
+  const [gameState, setGameState] = useState("playing");
 
-  // Simulação de moedas
-  const [userCoins, setUserCoins] = useState(100);
-  const [rewardMessage, setRewardMessage] = useState("");
+  // 2. Substituir o useState local
+  const { userCoins, addCoins, isAdmin } = useApp();
+  const [rewardMessage, setRewardMessage] = useState(""); // Nossa "trava"
 
-  // --- Lógica Principal do Jogo ---
-
-  // Este useEffect "observa" as cartas viradas
+  // Lógica de virar (Sem mudança)
   useEffect(() => {
     if (flippedCards.length === 2) {
-      setIsChecking(true); // Trava o tabuleiro
-      setMoves((m) => m + 1); // Incrementa o número de tentativas
-
+      setIsChecking(true);
+      setMoves((m) => m + 1);
       const [first, second] = flippedCards;
-
-      // Se for um PAR
       if (cards[first].emoji === cards[second].emoji) {
         setMatchedCards((prev) => [...prev, cards[first].emoji]);
-
-        // Atualiza as cartas para "isMatched = true"
         setCards((prevCards) =>
           prevCards.map((card) =>
             card.emoji === cards[first].emoji
@@ -97,10 +86,7 @@ const MemoryGame = () => {
           )
         );
         resetFlippedCards();
-      }
-      // Se NÃO for um par
-      else {
-        // Espera 1 segundo e vira de volta
+      } else {
         setTimeout(() => {
           setCards((prevCards) =>
             prevCards.map((card, index) =>
@@ -115,32 +101,29 @@ const MemoryGame = () => {
     }
   }, [flippedCards, cards]);
 
-  // Este useEffect "observa" se o jogo acabou
+  // Lógica de Vitória (COM A TRAVA)
   useEffect(() => {
     const totalPairs = DIFFICULTIES[difficulty].pairs;
-    if (matchedCards.length === totalPairs) {
+    // ⭐ 3. Adicionar a "trava"
+    if (matchedCards.length === totalPairs && rewardMessage === "") {
       setGameState("won");
       const reward = DIFFICULTIES[difficulty].reward;
-      setUserCoins((c) => c + reward);
-      setRewardMessage(`Você venceu em ${moves} jogadas! +${reward} moedas!`);
+      // (Você pode adicionar lógica de bônus por 'moves' aqui)
+      const totalReward = reward;
+      addCoins(totalReward); // Usar addCoins
+      setRewardMessage(
+        `Você venceu em ${moves} jogadas! +${totalReward} moedas!`
+      );
     }
-  }, [matchedCards, difficulty, moves]);
+  }, [matchedCards, difficulty, moves, addCoins, rewardMessage]); // Adicionar dependências
 
   const resetFlippedCards = () => {
     setFlippedCards([]);
-    setIsChecking(false); // Libera o tabuleiro
+    setIsChecking(false);
   };
-
-  // --- Manipuladores de Evento ---
 
   const handleCardClick = (index) => {
     const clickedCard = cards[index];
-
-    // Impede o clique se:
-    // 1. O jogo estiver travado (chegando)
-    // 2. A carta já estiver virada
-    // 3. A carta já for um par
-    // 4. O jogo já acabou
     if (
       isChecking ||
       clickedCard.isFlipped ||
@@ -149,15 +132,11 @@ const MemoryGame = () => {
     ) {
       return;
     }
-
-    // Vira a carta
     setCards((prevCards) =>
       prevCards.map((card, i) =>
         i === index ? { ...card, isFlipped: true } : card
       )
     );
-
-    // Adiciona ao array de cartas viradas
     setFlippedCards((prev) => [...prev, index]);
   };
 
@@ -170,37 +149,31 @@ const MemoryGame = () => {
     setMoves(0);
     setIsChecking(false);
     setGameState("playing");
-    setRewardMessage("");
+    setRewardMessage(""); // Limpa a "trava"
   };
 
   return (
     <div className="memory-game-container">
-      <div className="coin-display">Moedas: {userCoins} 💰</div>
-
       <h1 className="memory-game-title">Jogo da Memória</h1>
-
-      {/* --- Seletor de Dificuldade (só no início) --- */}
       {gameState === "playing" && moves === 0 && (
         <div className="difficulty-selector memory">
-          {Object.keys(DIFFICULTIES).map((level) => (
-            <button
-              key={level}
-              className={difficulty === level ? "active" : ""}
-              onClick={() => restartGame(level)}
-            >
-              {DIFFICULTIES[level].label} ({DIFFICULTIES[level].pairs * 2}{" "}
-              cartas)
-            </button>
-          ))}
+          {Object.keys(DIFFICULTIES).map((level) => {
+            return (
+              <button
+                key={level}
+                className={difficulty === level ? "active" : ""}
+                onClick={() => restartGame(level)}
+              >
+                {DIFFICULTIES[level].label} ({DIFFICULTIES[level].pairs * 2}{" "}
+                cartas)
+              </button>
+            );
+          })}
         </div>
       )}
-
-      {/* --- Placar (Tentativas) --- */}
       <div className="memory-game-stats">
         Tentativas: <strong>{moves}</strong>
       </div>
-
-      {/* --- Tabuleiro do Jogo --- */}
       {gameState === "playing" && (
         <div className={`memory-board ${difficulty}`}>
           {cards.map((card, index) => (
@@ -217,8 +190,6 @@ const MemoryGame = () => {
           ))}
         </div>
       )}
-
-      {/* --- Tela de Vitória --- */}
       {gameState === "won" && (
         <div className="game-won-overlay">
           <h2>{rewardMessage}</h2>

@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import "./BrickBreaker.css";
+import { useApp } from "../../contexts/AppContext"; // 1. Importar
 
-// --- Configuração do Jogo (Sem mudança) ---
+// ... (Constantes do Jogo não mudam) ...
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 500;
 const PADDLE_WIDTH = 120;
@@ -15,22 +16,19 @@ const BRICK_HEIGHT = 20;
 const BRICK_PADDING = 10;
 const BRICK_OFFSET_TOP = 30;
 const BRICK_OFFSET_LEFT = 45;
+// ... (Fim das Constantes) ...
 
 const BrickBreakerGame = () => {
   const canvasRef = useRef(null);
   const gameLoopRef = useRef(null);
-
-  // --- Estados do Jogo ---
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState("setup");
-
-  // ⭐⭐⭐ NOVO REF PARA O LOOP ⭐⭐⭐
   const gameStateRef = useRef("setup");
 
-  const [userCoins, setUserCoins] = useState(100);
-  const [rewardMessage, setRewardMessage] = useState("");
+  // 2. Substituir o useState local
+  const { userCoins, addCoins } = useApp();
+  const [rewardMessage, setRewardMessage] = useState(""); // Nossa "trava"
 
-  // --- Refs para Posições (Sem mudança) ---
   const paddleRef = useRef({ x: CANVAS_WIDTH / 2 - PADDLE_WIDTH / 2 });
   const ballRef = useRef({
     x: CANVAS_WIDTH / 2,
@@ -39,8 +37,6 @@ const BrickBreakerGame = () => {
     dy: -4,
   });
   const bricksRef = useRef([]);
-
-  // --- Funções (Agora com useCallback) ---
 
   const createBricks = useCallback(() => {
     const newBricks = [];
@@ -51,32 +47,34 @@ const BrickBreakerGame = () => {
       }
     }
     bricksRef.current = newBricks;
-  }, []); // Dependência vazia
+  }, []);
 
   const endGame = useCallback(
     (didWin) => {
+      // ⭐ 3. Adicionar a "trava"
+      if (rewardMessage !== "") return; // Já finalizou
+
       cancelAnimationFrame(gameLoopRef.current);
 
       if (didWin) {
         setGameState("won");
-        gameStateRef.current = "won"; // ⭐ ATUALIZA O REF
+        gameStateRef.current = "won";
         const totalReward = score + 50;
         setRewardMessage(`Você venceu! +${totalReward} moedas!`);
-        setUserCoins((c) => c + totalReward);
+        addCoins(totalReward); // Usa addCoins
       } else {
         setGameState("gameover");
-        gameStateRef.current = "gameover"; // ⭐ ATUALIZA O REF
+        gameStateRef.current = "gameover";
         setRewardMessage(`Fim de Jogo! Você fez ${score} moedas.`);
-        setUserCoins((c) => c + score);
+        addCoins(score); // Usa addCoins
       }
     },
-    [score]
-  ); // Depende do 'score' para a mensagem
+    [score, addCoins, rewardMessage]
+  ); // Adicionar dependências
 
   const checkCollisions = useCallback(() => {
     const ball = ballRef.current;
     const paddle = paddleRef.current;
-
     if (
       ball.x + ball.dx < BALL_RADIUS ||
       ball.x + ball.dx > CANVAS_WIDTH - BALL_RADIUS
@@ -89,23 +87,19 @@ const BrickBreakerGame = () => {
       if (ball.x > paddle.x && ball.x < paddle.x + PADDLE_WIDTH) {
         ball.dy = -ball.dy;
       } else {
-        endGame(false); // 'false' = não venceu
+        endGame(false);
       }
     }
-
     let totalBricks = 0;
     let aliveBricks = 0;
-
     for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
       for (let r = 0; r < BRICK_ROW_COUNT; r++) {
         const brick = bricksRef.current[c][r];
         totalBricks++;
         if (!brick.isAlive) continue;
-
         aliveBricks++;
         brick.x = c * (BRICK_WIDTH + BRICK_PADDING) + BRICK_OFFSET_LEFT;
         brick.y = r * (BRICK_HEIGHT + BRICK_PADDING) + BRICK_OFFSET_TOP;
-
         if (
           ball.x > brick.x &&
           ball.x < brick.x + BRICK_WIDTH &&
@@ -114,15 +108,14 @@ const BrickBreakerGame = () => {
         ) {
           ball.dy = -ball.dy;
           brick.isAlive = false;
-          setScore((s) => s + 1);
+          setScore((s) => s + 1); // Placar local da partida
         }
       }
     }
-
     if (aliveBricks === 0 && totalBricks > 0) {
-      endGame(true); // 'true' = venceu
+      endGame(true);
     }
-  }, [endGame]); // Depende do 'endGame'
+  }, [endGame]);
 
   const draw = useCallback((ctx) => {
     ctx.fillStyle = "#1a1a1a";
@@ -133,7 +126,6 @@ const BrickBreakerGame = () => {
     ctx.beginPath();
     ctx.arc(ballRef.current.x, ballRef.current.y, BALL_RADIUS, 0, Math.PI * 2);
     ctx.fill();
-
     const colors = ["#ff6b6b", "#f06595", "#cc5de8", "#845ef7", "#5c7cfa"];
     for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
       for (let r = 0; r < BRICK_ROW_COUNT; r++) {
@@ -145,27 +137,21 @@ const BrickBreakerGame = () => {
         ctx.fillRect(brick.x, brick.y, BRICK_WIDTH, BRICK_HEIGHT);
       }
     }
-  }, []); // Dependência vazia
+  }, []);
 
   const gameLoop = useCallback(() => {
-    // ⭐⭐⭐ A CORREÇÃO PRINCIPAL ESTÁ AQUI ⭐⭐⭐
     if (gameStateRef.current !== "playing") return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-
     ctx.fillStyle = "#1a1a1a";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
     draw(ctx);
     checkCollisions();
-
     ballRef.current.x += ballRef.current.dx;
     ballRef.current.y += ballRef.current.dy;
-
     gameLoopRef.current = requestAnimationFrame(gameLoop);
-  }, [draw, checkCollisions]); // Depende das funções 'draw' e 'checkCollisions'
+  }, [draw, checkCollisions]);
 
   const startGame = useCallback(() => {
     createBricks();
@@ -177,52 +163,40 @@ const BrickBreakerGame = () => {
       dy: -4,
     };
     setScore(0);
-    setRewardMessage("");
+    setRewardMessage(""); // Limpa a trava
     setGameState("playing");
-    gameStateRef.current = "playing"; // ⭐ ATUALIZA O REF
-
+    gameStateRef.current = "playing";
     cancelAnimationFrame(gameLoopRef.current);
     gameLoopRef.current = requestAnimationFrame(gameLoop);
-  }, [createBricks, gameLoop]); // Depende do 'gameLoop' e 'createBricks'
+  }, [createBricks, gameLoop]);
 
-  // --- Hooks de Efeito (useEffect) ---
-
-  // Desenha o estado inicial (setup)
   useEffect(() => {
     createBricks();
     const ctx = canvasRef.current.getContext("2d");
     draw(ctx);
-  }, [draw, createBricks]); // Depende de 'draw' e 'createBricks'
+  }, [draw, createBricks]);
 
-  // Controla o Paddle com o Mouse (Sem mudança)
   useEffect(() => {
     const handleMouseMove = (e) => {
       const canvas = canvasRef.current;
-      if (!canvas || gameStateRef.current !== "playing") return; // Só move se o jogo estiver rolando
-
+      if (!canvas || gameStateRef.current !== "playing") return;
       const rect = canvas.getBoundingClientRect();
       let mouseX = e.clientX - rect.left;
-
       if (mouseX < PADDLE_WIDTH / 2) mouseX = PADDLE_WIDTH / 2;
       if (mouseX > CANVAS_WIDTH - PADDLE_WIDTH / 2)
         mouseX = CANVAS_WIDTH - PADDLE_WIDTH / 2;
-
       paddleRef.current.x = mouseX - PADDLE_WIDTH / 2;
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(gameLoopRef.current);
     };
-  }, []); // Roda só uma vez
+  }, []);
 
-  // --- Renderização (Sem mudança) ---
   return (
     <div className="bb-game-container">
-      <div className="coin-display">Moedas: {userCoins} 💰</div>
       <h1 className="bb-game-title">Quebra-Blocos</h1>
-
       <div className="bb-game-area">
         {gameState !== "playing" && (
           <div className="bb-overlay">
@@ -248,10 +222,8 @@ const BrickBreakerGame = () => {
             )}
           </div>
         )}
-
         <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
       </div>
-
       <div className="bb-score">
         Moedas da Partida: <strong>{score}</strong>
       </div>

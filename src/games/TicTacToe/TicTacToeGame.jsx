@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./TicTacToe.css";
-import { useApp } from "../../contexts/AppContext"; // Importação correta
+import { useApp } from "../../contexts/AppContext";
 
 // --- Constantes do Jogo (Sem mudança) ---
 const PLAYER = "X";
@@ -28,13 +28,9 @@ const TicTacToeGame = () => {
   const [difficulty, setDifficulty] = useState("easy");
   const [unlockedDifficulty, setUnlockedDifficulty] = useState("easy");
   const [xIsNext, setXIsNext] = useState(true);
-  const [rewardMessage, setRewardMessage] = useState("");
+  const [rewardMessage, setRewardMessage] = useState(""); // Esta é nossa "trava"
 
-  // --- ⭐⭐⭐ A CORREÇÃO ESTÁ AQUI ⭐⭐⭐ ---
-  // 1. REMOVA a linha: const [userCoins, setUserCoins] = useState();
-  // 2. ADICIONE estas linhas para pegar o cofre GLOBAL:
-  const { userCoins, addCoins } = useApp();
-  // --- Fim da Correção ---
+  const { userCoins, addCoins, isAdmin } = useApp();
 
   // --- Funções de Lógica (Sem mudança) ---
   const getEmptySquares = useCallback((squares) => {
@@ -74,12 +70,10 @@ const TicTacToeGame = () => {
   // --- Lógica da IA (Sem mudança) ---
   const minimax = useCallback(
     (newBoard, isMaximizing) => {
-      // (Todo o código do minimax... sem mudança)
       const winner = calculateWinner(newBoard);
       if (winner === PLAYER) return 10;
       if (winner === BOT) return -10;
       if (winner === "draw") return 0;
-
       if (isMaximizing) {
         let bestScore = -Infinity;
         for (const i of getEmptySquares(newBoard)) {
@@ -102,20 +96,16 @@ const TicTacToeGame = () => {
     },
     [calculateWinner, getEmptySquares]
   );
-
   const findEasyMove = useCallback(
     (squares) => {
-      // (Sem mudança)
       const emptySquares = getEmptySquares(squares);
       if (emptySquares.length === 0) return -1;
       return emptySquares[Math.floor(Math.random() * emptySquares.length)];
     },
     [getEmptySquares]
   );
-
   const findMediumMove = useCallback(
     (squares) => {
-      // (Sem mudança)
       const emptySquares = getEmptySquares(squares);
       for (const i of emptySquares) {
         squares[i] = BOT;
@@ -137,10 +127,8 @@ const TicTacToeGame = () => {
     },
     [getEmptySquares, calculateWinner, findEasyMove]
   );
-
   const findBestMove = useCallback(
     (squares) => {
-      // (Sem mudança)
       let bestScore = Infinity;
       let bestMove = -1;
       for (const i of getEmptySquares(squares)) {
@@ -156,10 +144,8 @@ const TicTacToeGame = () => {
     },
     [minimax, getEmptySquares]
   );
-
   const makeComputerMove = useCallback(
     (currentBoard) => {
-      // (Sem mudança)
       let move;
       const simulationBoard = [...currentBoard];
       switch (difficulty) {
@@ -191,60 +177,60 @@ const TicTacToeGame = () => {
     [difficulty, findEasyMove, findMediumMove, findBestMove]
   );
 
-  // --- Hooks de Efeito (Sem mudança, mas agora 'addCoins' existe) ---
+  // --- Hooks de Efeito (useEffect) ---
+
+  const winner = calculateWinner(board);
+
+  // Observa a vez do Bot
   useEffect(() => {
-    const winner = calculateWinner(board);
     const isComputerTurn = gameMode === "pvc" && !xIsNext && !winner;
     if (isComputerTurn) {
       setTimeout(() => {
         makeComputerMove(board);
       }, 500);
     }
-  }, [board, xIsNext, gameMode, calculateWinner, makeComputerMove]);
+  }, [board, xIsNext, gameMode, winner, makeComputerMove]);
 
+  // Observador de Fim de Jogo
   useEffect(() => {
-    const winner = calculateWinner(board);
-    if (!winner || winner === "draw") return;
+    // --- ⭐⭐⭐ A CORREÇÃO ESTÁ AQUI ⭐⭐⭐ ---
+    // Só roda se o jogo acabou (winner != null) E a mensagem de recompensa está vazia
+    if (winner && rewardMessage === "") {
+      if (winner === PLAYER && gameMode === "pvc") {
+        const reward = REWARDS[difficulty];
+        addCoins(reward); // Só será chamado UMA VEZ
+        setRewardMessage(`Você venceu! +${reward} moedas!`); // Seta a "trava"
 
-    if (winner === PLAYER && gameMode === "pvc") {
-      const reward = REWARDS[difficulty];
-      addCoins(reward); // Agora esta função é válida!
-      setRewardMessage(`Você venceu! +${reward} moedas!`);
-
-      const currentLevelIndex = difficultyLevels.indexOf(difficulty);
-      const unlockedLevelIndex = difficultyLevels.indexOf(unlockedDifficulty);
-
-      if (
-        currentLevelIndex === unlockedLevelIndex &&
-        currentLevelIndex < difficultyLevels.length - 1
-      ) {
-        const nextDifficulty = difficultyLevels[currentLevelIndex + 1];
-        setUnlockedDifficulty(nextDifficulty);
-        setRewardMessage((msg) => msg + ` Nível "${nextDifficulty}" liberado!`);
+        const currentLevelIndex = difficultyLevels.indexOf(difficulty);
+        const unlockedLevelIndex = difficultyLevels.indexOf(unlockedDifficulty);
+        if (
+          currentLevelIndex === unlockedLevelIndex &&
+          currentLevelIndex < difficultyLevels.length - 1
+        ) {
+          const nextDifficulty = difficultyLevels[currentLevelIndex + 1];
+          setUnlockedDifficulty(nextDifficulty);
+          setRewardMessage(
+            (msg) => msg + ` Nível "${nextDifficulty}" liberado!`
+          );
+        }
+      } else if (winner === BOT && gameMode === "pvc") {
+        setRewardMessage("O Bot venceu. Tente novamente!"); // Seta a "trava"
+      } else if (winner === "draw") {
+        setRewardMessage("Deu Velha! (Empate)"); // Seta a "trava"
       }
-    } else if (winner === BOT && gameMode === "pvc") {
-      setRewardMessage("O Bot venceu. Tente novamente!");
     }
+    // Agora depende do rewardMessage para parar o loop
   }, [
-    board,
+    winner,
     gameMode,
     difficulty,
     unlockedDifficulty,
-    calculateWinner,
-    addCoins, // A dependência está correta
+    addCoins,
+    rewardMessage,
   ]);
-
-  useEffect(() => {
-    const winner = calculateWinner(board);
-    if (winner === "draw") {
-      setRewardMessage("Deu Velha! (Empate)");
-    }
-  }, [board, calculateWinner]);
 
   // --- Manipuladores de Evento (Sem mudança) ---
   const handleClick = (i) => {
-    // (Sem mudança)
-    const winner = calculateWinner(board);
     const isComputerTurn = gameMode === "pvc" && !xIsNext;
     if (winner || board[i] || isComputerTurn) {
       return;
@@ -256,26 +242,22 @@ const TicTacToeGame = () => {
   };
 
   const restartGame = () => {
-    // (Sem mudança)
     setBoard(Array(9).fill(null));
     setXIsNext(true);
-    setRewardMessage("");
+    setRewardMessage(""); // Limpa a "trava" para a próxima partida
   };
 
   const selectGameMode = (mode) => {
-    // (Sem mudança)
     setGameMode(mode);
     restartGame();
   };
 
   const selectDifficulty = (diff) => {
-    // (Sem mudança)
     setDifficulty(diff);
     restartGame();
   };
 
   // --- Lógica de Renderização (Sem mudança) ---
-  const winner = calculateWinner(board);
   const gameStarted = board.some((sq) => sq !== null);
   let status;
   if (!winner) {
@@ -289,13 +271,9 @@ const TicTacToeGame = () => {
     rewardMessage ? "reward-status" : "normal-status"
   }`;
 
-  // O 'return (...)' é o JSX e não muda.
-  // O <div className="coin-display">Moedas: {userCoins} 💰</div>
-  // agora vai ler 'userCoins' do cofre global automaticamente.
+  // --- JSX (Sem mudança) ---
   return (
     <div className="game-container">
-      <div className="coin-display">Moedas: {userCoins} 💰</div>
-
       <h1 className="game-title">Jogo da Velha</h1>
 
       {!gameStarted ? (
@@ -321,7 +299,9 @@ const TicTacToeGame = () => {
                 const levelIndex = difficultyLevels.indexOf(level);
                 const unlockedIndex =
                   difficultyLevels.indexOf(unlockedDifficulty);
-                const isLocked = levelIndex > unlockedIndex;
+
+                // ⭐ LÓGICA DE ADMIN: Se for admin, NUNCA está bloqueado
+                const isLocked = !isAdmin && levelIndex > unlockedIndex;
 
                 return (
                   <button
@@ -329,15 +309,14 @@ const TicTacToeGame = () => {
                     onClick={() => selectDifficulty(level)}
                     className={difficulty === level ? "active" : ""}
                     disabled={isLocked}
-                    title={
-                      isLocked
-                        ? `Vença o nível "${
-                            difficultyLevels[levelIndex - 1]
-                          }" para liberar`
-                        : `Nível ${level}`
-                    }
+                    title={isLocked ? "Bloqueado" : ""}
                   >
-                    {isLocked ? "🔒" : ""} {level}
+                    {isLocked
+                      ? "🔒"
+                      : isAdmin && levelIndex > unlockedIndex
+                      ? "🔓 "
+                      : ""}{" "}
+                    {level}
                   </button>
                 );
               })}
