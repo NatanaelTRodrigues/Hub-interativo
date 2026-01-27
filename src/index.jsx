@@ -9,7 +9,6 @@ import { AppProvider } from "./contexts/AppContext"; // <-- Mude esta linha
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* --- ATUALIZE O PROVIDER --- */}
     <AppProvider>
       <App />
     </AppProvider>

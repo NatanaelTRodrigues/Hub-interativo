@@ -13,3 +13,24 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+body.cursor-fogo {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24">🔥</text></svg>'),
+    auto;
+}
+body.cursor-agua {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24">💧</text></svg>'),
+    auto;
+}
+body.cursor-tornado {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24">🌪️</text></svg>'),
+    auto;
+}
+body.cursor-raio {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24">⚡</text></svg>'),
+    auto;
+}
+body.cursor-patinhas {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="24">🐾</text></svg>'),
+    auto;
+}
