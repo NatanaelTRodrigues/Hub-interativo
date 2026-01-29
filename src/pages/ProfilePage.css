@@ -1,147 +1,280 @@
 .profile-page-container {
+  padding: 2rem;
+  min-height: calc(100vh - 80px); /* Ajusta altura */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  background-color: #121212;
-  color: #fff;
-  padding: 2rem;
 }
 
-.profile-title {
-  font-size: 3rem;
+.profile-page-title {
+  font-size: 2.5rem;
   color: #4d90fe;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.profile-content-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  align-items: center;
+}
+
+/* --- CARTÃO DE PERFIL (Base) --- */
+.profile-card {
+  background-color: #1f1f1f;
+  border-radius: 20px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333; /* Borda padrão discreta */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden; /* Para conter efeitos de brilho */
+}
+
+/* --- TEMAS (Equipáveis via 'classe_css' no Banco) --- */
+
+/* Tema: Cyberpunk (Neon Azul/Rosa) */
+.profile-card.theme-cyberpunk {
+  border: 2px solid #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3),
+    inset 0 0 50px rgba(0, 212, 255, 0.1);
+  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d1a 100%);
+}
+.profile-card.theme-cyberpunk .user-title {
+  color: #00d4ff;
+  text-shadow: 0 0 5px #00d4ff;
+}
+
+/* Tema: Gold (Ouro / Luxo) */
+.profile-card.theme-gold {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(145deg, #1a1a1a 0%, #292400 100%);
+}
+.profile-card.theme-gold .user-title {
+  color: #ffd700;
+}
+
+/* Tema: Fire (Fogo / Magma) */
+.profile-card.theme-fire {
+  border: 2px solid #ff4500;
+  box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);
+  background: linear-gradient(145deg, #1a1a1a 0%, #2b0b00 100%);
+}
+.profile-card.theme-fire .user-title {
+  color: #ff4500;
+}
+
+/* --- CONTEÚDO DO CARTÃO --- */
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
-/* Mostrador de Moedas (similar ao dos jogos) */
-.profile-coin-display {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 1.2rem;
-  background-color: #2a2a2a;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-}
-.profile-coin-display strong {
-  color: #ffd700;
-  font-weight: bold;
+.avatar-container {
+  margin-bottom: 1rem;
+  /* Espaço extra para o chapéu não cortar */
+  padding-top: 20px;
 }
 
-.profile-content {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  width: 100%;
-  max-width: 1200px;
+.profile-names {
+  text-align: center;
 }
 
-.profile-section {
-  background-color: #1a1a1a;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* --- Lado Esquerdo: Perfil --- */
-.profile-inventory {
-  flex-basis: 40%; /* Ocupa 40% da largura */
-}
-
-.profile-avatar-preview {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%; /* Círculo */
-  border: 5px solid #4d90fe; /* Borda (simulada) */
-  margin: 1rem auto;
-  overflow: hidden;
-  background-color: #333;
-}
-.profile-avatar-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.inventory-list {
-  list-style: none;
-  padding: 0;
+.username {
+  font-size: 2rem;
   margin: 0;
-}
-.inventory-list li {
-  font-size: 1.1rem;
-  padding: 0.3rem;
-}
-
-.custom-url-input {
-  margin-top: 1rem;
-}
-.custom-url-input label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #aaa;
-}
-.custom-url-input input {
-  width: 90%;
-  padding: 0.5rem;
-  background-color: #2a2a2a;
-  border: 1px solid #555;
   color: #fff;
-  border-radius: 5px;
-}
-
-/* --- Lado Direito: Loja --- */
-.profile-store {
-  flex-basis: 60%; /* Ocupa 60% da largura */
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.store-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #2a2a2a;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  justify-content: center;
+  gap: 10px;
 }
 
-.item-icon {
-  font-size: 2.5rem;
-  margin-right: 1rem;
-}
-
-.item-info {
-  flex-grow: 1;
-}
-.item-info h4 {
-  margin: 0 0 5px 0;
-  font-size: 1.2rem;
-}
-.item-info .item-price {
-  color: #ffd700;
-  font-weight: bold;
-}
-
-.buy-button {
-  padding: 0.8rem 1rem;
+.admin-badge {
   font-size: 1rem;
+  cursor: help;
+}
+
+.user-title {
+  font-size: 1.2rem;
+  color: #888;
   font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #2f9e44;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-top: 5px;
+}
+
+/* Estatísticas (Linha do meio) */
+.profile-stats-row {
+  display: flex;
+  justify-content: space-around;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #fff;
-  transition: background-color 0.3s;
 }
-.buy-button:hover {
-  background-color: #2b8a3e;
+
+.stat-value.coin-text {
+  color: #ffd700;
 }
-.buy-button:disabled {
-  background-color: #555;
-  color: #999;
-  cursor: not-allowed;
+
+/* Botões de Ação */
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.action-btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #fff;
+  transition: transform 0.2s, background-color 0.2s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+}
+
+.inventory-btn {
+  background-color: #4d90fe;
+}
+.inventory-btn:hover {
+  background-color: #3a7bd5;
+}
+
+.store-btn {
+  background-color: #e0a800;
+  color: #121212;
+}
+.store-btn:hover {
+  background-color: #c69500;
+}
+
+.logout-btn {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+}
+.logout-btn:hover {
+  background-color: #c92a2a;
+  border-color: #c92a2a;
+}
+
+/* --- SEÇÃO DE JOGOS --- */
+.stats-section {
+  width: 100%;
+}
+
+.stats-section h3 {
+  color: #aaa;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.games-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.game-stat-card {
+  background-color: #252525;
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #333;
+}
+
+.game-stat-card h4 {
+  margin: 0 0 10px 0;
+  color: #fff;
+}
+
+.game-stat-card p {
+  margin: 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.status-ok {
+  color: #2f9e44;
+  font-weight: bold;
+}
+/* --- NOVOS TEMAS --- */
+
+/* Tema Matrix (Verde Hacker) */
+.profile-card.theme-matrix {
+  border: 2px solid #00ff41;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+  background: linear-gradient(180deg, #0d0d0d 0%, #001a05 100%);
+  font-family: "Courier New", monospace; /* Fonte estilo código */
+}
+.profile-card.theme-matrix .user-title {
+  color: #00ff41;
+  letter-spacing: 1px;
+}
+
+/* Tema Gelo (Azul Claro) */
+.profile-card.theme-ice {
+  border: 2px solid #aeeeee;
+  box-shadow: 0 0 20px rgba(174, 238, 238, 0.4);
+  background: linear-gradient(145deg, #1a2a3a 0%, #2c5364 100%);
+}
+.profile-card.theme-ice .user-title {
+  color: #aeeeee;
+}
+
+/* Tema Natureza (Verde Folha) */
+.profile-card.theme-nature {
+  border: 2px solid #4caf50;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+  background: linear-gradient(145deg, #1b2e1b 0%, #2e462e 100%);
+}
+.profile-card.theme-nature .user-title {
+  color: #8bc34a;
+}
+
+/* Tema Escuridão (Roxo Profundo/Preto) */
+.profile-card.theme-dark {
+  border: 2px solid #4b0082;
+  box-shadow: 0 0 25px rgba(75, 0, 130, 0.6);
+  background-color: #000;
+}
+.profile-card.theme-dark .user-title {
+  color: #9400d3;
+  text-shadow: 0 0 8px #9400d3;
 }
