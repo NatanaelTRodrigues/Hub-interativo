@@ -1,0 +1,85 @@
+/* Container Principal (Não corta nada) */
+.user-avatar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Importante: permite que o chapéu saia da caixa */
+  overflow: visible !important;
+}
+
+/* O Círculo da Imagem (Corta a imagem para ficar redonda) */
+.user-avatar-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden; /* Corta a imagem */
+  background-color: #333;
+  border: 3px solid #4d90fe; /* Borda Padrão */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.user-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* O Chapéu (Fica em cima de tudo) */
+.avatar-hat-img {
+  position: absolute;
+  top: -35%; /* Sobe mais para ficar no topo da cabeça */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%; /* Um pouco maior que a cabeça */
+  height: auto;
+  z-index: 10; /* Garante que fica na frente */
+  pointer-events: none;
+}
+
+/* Tamanhos do Container */
+.user-avatar-container.small {
+  width: 40px;
+  height: 40px;
+}
+.user-avatar-container.medium {
+  width: 80px;
+  height: 80px;
+}
+.user-avatar-container.large {
+  width: 150px;
+  height: 150px;
+}
+
+/* Tamanhos das Bordas */
+.user-avatar-container.small .user-avatar-circle {
+  border-width: 2px;
+}
+.user-avatar-container.medium .user-avatar-circle {
+  border-width: 3px;
+}
+.user-avatar-container.large .user-avatar-circle {
+  border-width: 5px;
+}
+
+/* Estilos de Borda (Equipadas) */
+.border-chama {
+  border-color: #e8590c;
+  box-shadow: 0 0 10px 2px #e8590c;
+}
+.border-raio {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px 2px #ffd700;
+}
+.border-névoa {
+  border-color: #adb5bd;
+  box-shadow: 0 0 10px 2px #adb5bd;
+}
+.border-galáxia {
+  border-color: #cc5de8;
+  box-shadow: 0 0 10px 2px #cc5de8;
+}

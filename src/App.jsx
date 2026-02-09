@@ -22,6 +22,8 @@ import SnakeGame from "./games/Snake/SnakeGame";
 import ClickerGame from "./games/ClickerGame/ClickerGame";
 import BrickBreakerGame from "./games/BrickBreaker/BrickBreakerGame";
 import CommunityPage from "./pages/CommunityPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
+import TermoGame from "./games/Termo/TermoGame";
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
           <Route path="/jogo/quebra-blocos" element={<BrickBreakerGame />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/comunidade" element={<CommunityPage />} />
+          <Route path="/ranking" element={<LeaderboardPage />} />
+          <Route path="/jogos/termo" element={<TermoGame />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,0 +1,277 @@
+/* src/pages/games/TermoGame.css */
+.termo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background-color: #121212;
+  color: white;
+  padding-top: 20px;
+  font-family: "Arial", sans-serif;
+  user-select: none; /* Impede seleção de texto ao clicar rápido */
+}
+
+/* --- CABEÇALHO E MODOS --- */
+.game-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.termo-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.mode-switch {
+  display: flex;
+  background: #2c2c2e;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 5px;
+}
+
+.mode-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.mode-btn.active {
+  background: #538d4e;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.mode-btn:hover:not(.active) {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- TABULEIRO --- */
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 320px;
+  height: 60px;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #3a3a3c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: transparent;
+  border-radius: 4px;
+  color: white;
+  transition: border-color 0.1s;
+}
+
+/* CURSOR DE SELEÇÃO (NOVO) */
+/* Indica qual quadrado vai receber a letra */
+.tile.selected {
+  border-color: #4d90fe; /* Azul destaque */
+  box-shadow: 0 0 10px rgba(77, 144, 254, 0.3);
+  background-color: rgba(77, 144, 254, 0.1);
+}
+
+/* Pode clicar no quadrado */
+.tile.clickable {
+  cursor: pointer;
+}
+.tile.clickable:hover {
+  border-color: #666;
+}
+
+/* --- ESTADOS --- */
+.tile.correct {
+  background-color: #538d4e;
+  border-color: #538d4e;
+}
+.tile.present {
+  background-color: #b59f3b;
+  border-color: #b59f3b;
+}
+.tile.absent {
+  background-color: #3a3a3c;
+  border-color: #3a3a3c;
+}
+.tile.filled {
+  border-color: #565758;
+  animation: pop 0.1s ease-in-out;
+}
+
+/* --- TECLADO --- */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 10px;
+}
+
+.key-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.key {
+  font-family: inherit;
+  font-weight: bold;
+  border: 0;
+  height: 50px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #818384;
+  color: white;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.key.big {
+  flex: 1.5;
+  font-size: 0.75rem;
+}
+.key.correct {
+  background-color: #538d4e;
+}
+.key.present {
+  background-color: #b59f3b;
+}
+.key.absent {
+  background-color: #1a1a1b;
+  opacity: 0.5;
+}
+
+/* --- BOTÕES DE AÇÃO --- */
+.top-bar {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+
+.action-text-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.action-text-btn:hover {
+  color: white;
+}
+.give-up-btn:hover {
+  color: #ff5252;
+}
+
+/* --- MODAL --- */
+.game-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  padding: 30px;
+  border-radius: 12px;
+  z-index: 2000;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  width: 90%;
+  max-width: 350px;
+}
+
+.modal-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #538d4e;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 1rem;
+}
+.modal-btn.danger {
+  background-color: #d32f2f;
+}
+/* --- TELA DE BLOQUEIO DIÁRIO --- */
+.daily-locked-message {
+  text-align: center;
+  background-color: #1e1e1e;
+  padding: 40px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  margin-top: 50px;
+  max-width: 400px;
+  animation: fadeIn 0.5s;
+}
+
+.daily-locked-message h2 {
+  color: #ffca28;
+  margin-bottom: 20px;
+}
+
+.daily-locked-message p {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  50% {
+    transform: scale(1.1);
+  }
+}
