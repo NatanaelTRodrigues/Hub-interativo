@@ -134,3 +134,18 @@ button {
   width: 100%;
   margin-top: 10px;
 }
+
+/* Garante que o menu flutue acima de tudo */
+.friends-dropdown {
+  position: absolute;
+  top: 100%; /* Logo abaixo do botão */
+  right: 0;
+  width: 300px; /* Um pouco mais largo para caber o input */
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  z-index: 99999; /* Valor bem alto */
+  margin-top: 10px;
+  overflow: hidden; /* Para as bordas arredondadas funcionarem */
+}
