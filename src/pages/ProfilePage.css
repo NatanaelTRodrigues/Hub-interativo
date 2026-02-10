@@ -1,9 +1,10 @@
 .profile-page-container {
   padding: 2rem;
-  min-height: calc(100vh - 80px); /* Ajusta altura */
+  min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #121212; /* Fundo escuro padrão */
 }
 
 .profile-page-title {
@@ -12,6 +13,7 @@
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(77, 144, 254, 0.3);
 }
 
 .profile-content-wrapper {
@@ -19,7 +21,7 @@
   max-width: 900px;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
 }
 
@@ -27,52 +29,17 @@
 .profile-card {
   background-color: #1f1f1f;
   border-radius: 20px;
-  padding: 3rem;
+  padding: 2.5rem;
   width: 100%;
-  max-width: 600px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 2px solid #333; /* Borda padrão discreta */
+  max-width: 650px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 2px solid #333;
   transition: all 0.3s ease;
   position: relative;
-  overflow: hidden; /* Para conter efeitos de brilho */
+  overflow: hidden;
 }
 
-/* --- TEMAS (Equipáveis via 'classe_css' no Banco) --- */
-
-/* Tema: Cyberpunk (Neon Azul/Rosa) */
-.profile-card.theme-cyberpunk {
-  border: 2px solid #00d4ff;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3),
-    inset 0 0 50px rgba(0, 212, 255, 0.1);
-  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d1a 100%);
-}
-.profile-card.theme-cyberpunk .user-title {
-  color: #00d4ff;
-  text-shadow: 0 0 5px #00d4ff;
-}
-
-/* Tema: Gold (Ouro / Luxo) */
-.profile-card.theme-gold {
-  border: 2px solid #ffd700;
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
-  background: linear-gradient(145deg, #1a1a1a 0%, #292400 100%);
-}
-.profile-card.theme-gold .user-title {
-  color: #ffd700;
-}
-
-/* Tema: Fire (Fogo / Magma) */
-.profile-card.theme-fire {
-  border: 2px solid #ff4500;
-  box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);
-  background: linear-gradient(145deg, #1a1a1a 0%, #2b0b00 100%);
-}
-.profile-card.theme-fire .user-title {
-  color: #ff4500;
-}
-
-/* --- CONTEÚDO DO CARTÃO --- */
-
+/* --- HEADER --- */
 .profile-header {
   display: flex;
   flex-direction: column;
@@ -82,8 +49,16 @@
 
 .avatar-container {
   margin-bottom: 1rem;
-  /* Espaço extra para o chapéu não cortar */
-  padding-top: 20px;
+  padding-top: 10px;
+}
+
+/* Wrapper para a borda do Rank no Avatar */
+.rank-border-wrapper {
+  padding: 5px;
+  border-radius: 50%;
+  border: 4px solid #333; /* Cor fallback */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease;
 }
 
 .profile-names {
@@ -98,6 +73,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .admin-badge {
@@ -106,22 +82,35 @@
 }
 
 .user-title {
-  font-size: 1.2rem;
-  color: #888;
+  font-size: 1.1rem;
+  color: #aaa;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   margin-top: 5px;
 }
 
-/* Estatísticas (Linha do meio) */
+.user-rank-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: #000; /* Texto preto para contraste com cores vivas de rank */
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* --- ESTATÍSTICAS --- */
 .profile-stats-row {
   display: flex;
   justify-content: space-around;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 1.2rem;
   margin-bottom: 2rem;
+  border: 1px solid #333;
 }
 
 .stat-box {
@@ -131,26 +120,105 @@
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: #aaa;
+  font-size: 0.8rem;
+  color: #888;
   text-transform: uppercase;
+  margin-bottom: 4px;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: bold;
   color: #fff;
 }
 
 .stat-value.coin-text {
   color: #ffd700;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+.stat-value.ruby-text {
+  color: #ff4081;
+  text-shadow: 0 0 8px rgba(255, 64, 129, 0.4);
+}
+.stat-value.xp-text {
+  color: #00e676;
 }
 
-/* Botões de Ação */
+/* --- BARRA DE PROGRESSO DO RANK (NOVO) --- */
+.rank-progress-section {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  border: 1px solid #333;
+}
+
+.rank-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 16px;
+  background-color: #111;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  position: relative;
+  transition: width 0.8s ease-out;
+}
+
+.progress-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  background: white;
+  opacity: 0.4;
+  filter: blur(4px);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.xp-missing-text {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* --- AÇÕES --- */
 .profile-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .action-btn {
@@ -159,96 +227,106 @@
   text-decoration: none;
   font-weight: bold;
   color: #fff;
-  transition: transform 0.2s, background-color 0.2s;
+  transition:
+    transform 0.2s,
+    filter 0.2s;
   border: none;
   cursor: pointer;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .action-btn:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
 }
 
 .inventory-btn {
   background-color: #4d90fe;
 }
-.inventory-btn:hover {
-  background-color: #3a7bd5;
-}
-
 .store-btn {
   background-color: #e0a800;
   color: #121212;
 }
-.store-btn:hover {
-  background-color: #c69500;
-}
-
 .logout-btn {
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-}
-.logout-btn:hover {
-  background-color: #c92a2a;
-  border-color: #c92a2a;
+  background-color: #d32f2f;
 }
 
-/* --- SEÇÃO DE JOGOS --- */
-.stats-section {
-  width: 100%;
-}
-
-.stats-section h3 {
+/* --- SEÇÃO DE UPLOADS (CUSTOMIZAÇÃO) --- */
+.uploads-section h3 {
   color: #aaa;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #444;
   padding-bottom: 10px;
   margin-bottom: 1.5rem;
+  margin-top: 0;
 }
 
-.games-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+.custom-url-input {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.game-stat-card {
-  background-color: #252525;
-  padding: 1.5rem;
-  border-radius: 10px;
-  text-align: center;
-  border: 1px solid #333;
+.custom-url-input label {
+  color: #ddd;
+  font-size: 0.9rem;
 }
 
-.game-stat-card h4 {
-  margin: 0 0 10px 0;
-  color: #fff;
-}
-
-.game-stat-card p {
-  margin: 0;
+.custom-url-input input[type="file"] {
+  background-color: #111;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #444;
   color: #aaa;
   font-size: 0.9rem;
 }
 
-.status-ok {
-  color: #2f9e44;
-  font-weight: bold;
+/* --- TEMAS (Mantidos do original) --- */
+.profile-card.theme-cyberpunk {
+  border: 2px solid #00d4ff;
+  box-shadow:
+    0 0 20px rgba(0, 212, 255, 0.3),
+    inset 0 0 50px rgba(0, 212, 255, 0.1);
+  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d1a 100%);
 }
-/* --- NOVOS TEMAS --- */
+.profile-card.theme-cyberpunk .user-title {
+  color: #00d4ff;
+  text-shadow: 0 0 5px #00d4ff;
+}
 
-/* Tema Matrix (Verde Hacker) */
+.profile-card.theme-gold {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(145deg, #1a1a1a 0%, #292400 100%);
+}
+.profile-card.theme-gold .user-title {
+  color: #ffd700;
+}
+
+.profile-card.theme-fire {
+  border: 2px solid #ff4500;
+  box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);
+  background: linear-gradient(145deg, #1a1a1a 0%, #2b0b00 100%);
+}
+.profile-card.theme-fire .user-title {
+  color: #ff4500;
+}
+
 .profile-card.theme-matrix {
   border: 2px solid #00ff41;
   box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
   background: linear-gradient(180deg, #0d0d0d 0%, #001a05 100%);
-  font-family: "Courier New", monospace; /* Fonte estilo código */
+  font-family: "Courier New", monospace;
 }
 .profile-card.theme-matrix .user-title {
   color: #00ff41;
   letter-spacing: 1px;
 }
 
-/* Tema Gelo (Azul Claro) */
 .profile-card.theme-ice {
   border: 2px solid #aeeeee;
   box-shadow: 0 0 20px rgba(174, 238, 238, 0.4);
@@ -258,7 +336,6 @@
   color: #aeeeee;
 }
 
-/* Tema Natureza (Verde Folha) */
 .profile-card.theme-nature {
   border: 2px solid #4caf50;
   box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
@@ -268,7 +345,6 @@
   color: #8bc34a;
 }
 
-/* Tema Escuridão (Roxo Profundo/Preto) */
 .profile-card.theme-dark {
   border: 2px solid #4b0082;
   box-shadow: 0 0 25px rgba(75, 0, 130, 0.6);

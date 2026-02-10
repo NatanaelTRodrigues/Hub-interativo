@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ArcadePage.css"; // Vamos criar este CSS
+import "./ArcadePage.css"; 
 
 const ArcadePage = () => {
   return (
@@ -56,6 +56,12 @@ const ArcadePage = () => {
           <span className="game-card-icon">🖱️</span>
           <h3>Teste de Cliques</h3>
           <p>Quantos cliques em 5s?</p>
+        </Link>
+
+        <Link to="/jogos/termo" className="game-card">
+          <span className="game-card-icon">T</span>
+          <h3>Termo</h3>
+          <p>Descubra a palavra em 6 tentativas.</p>
         </Link>
       </div>
     </div>

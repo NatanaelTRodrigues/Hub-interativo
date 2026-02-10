@@ -1,0 +1,130 @@
+.leaderboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  color: white;
+  min-height: 80vh;
+}
+
+.leaderboard-title {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.leaderboard-subtitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 40px;
+  font-size: 1.2rem;
+}
+
+.leaderboard-table-wrapper {
+  background: #1e1e1e;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+  background: #252525;
+  border-bottom: 2px solid #333;
+}
+
+.leaderboard-table th {
+  padding: 20px;
+  text-align: left;
+  font-weight: bold;
+  color: #888;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.leaderboard-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #2a2a2a;
+  vertical-align: middle;
+}
+
+/* DESTAQUE PARA O PRÓPRIO USUÁRIO */
+.my-rank-row {
+  background-color: rgba(0, 123, 255, 0.15);
+  border-left: 4px solid #007bff;
+}
+
+.rank-pos {
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 60px;
+}
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.player-avatar-small {
+  width: 40px;
+  height: 40px;
+  background: #444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 2px solid #555;
+}
+
+.player-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.me-badge {
+  font-size: 0.7rem;
+  background: #007bff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.rank-badge-small {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.xp-cell {
+  color: #00e676;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .leaderboard-table th:nth-child(5), /* Esconde colunas menos importantes no celular */
+  .leaderboard-table td:nth-child(5) {
+    display: none;
+  }
+
+  .leaderboard-title {
+    font-size: 2rem;
+  }
+}

@@ -72,12 +72,12 @@ function HomePage() {
           <div className="game-card-preview">Snake</div>
           <div className="game-card-preview">Quebra-Blocos</div>
           <div className="game-card-preview">Clicker</div>
+          <div className="game-card-preview">Termo</div>
         </div>
         <Link to="/jogos" className="btn-cta">
           Ver Todos os Jogos
         </Link>
       </section>
-
     </div>
   );
 }

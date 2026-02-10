@@ -1,0 +1,146 @@
+/* --- CURSOR PRINCIPAL --- */
+.custom-cursor {
+  position: fixed;
+  width: 40px; /* Tamanho do cursor principal */
+  height: 40px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%); /* Centraliza a ponta */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Filtro para garantir que GIFs com fundo preto fiquem transparentes (blend mode) */
+  mix-blend-mode: screen;
+}
+
+/* Brilho atrás do cursor (O "Molde") */
+.cursor-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+/* Cores do brilho por tipo */
+.cursor-fire .cursor-glow {
+  background-color: rgba(255, 69, 0, 0.8);
+}
+.cursor-water .cursor-glow {
+  background-color: rgba(0, 191, 255, 0.8);
+}
+.cursor-electric .cursor-glow {
+  background-color: rgba(255, 215, 0, 0.8);
+}
+.cursor-wind .cursor-glow {
+  background-color: rgba(200, 200, 200, 0.8);
+}
+
+/* --- PARTÍCULAS (O RASTRO) --- */
+.cursor-particle {
+  position: fixed;
+  width: 20px; /* Partículas são menores */
+  height: 20px;
+  pointer-events: none;
+  z-index: 9998; /* Fica atrás do cursor principal */
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  mix-blend-mode: screen; /* Remove fundo preto se houver */
+}
+
+/* --- FÍSICA DAS PARTÍCULAS (Animações) --- */
+
+/* 1. FOGO (Sobe e diminui) */
+.particle-fire {
+  animation: fire-drift 0.8s forwards;
+}
+@keyframes fire-drift {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* 2. ÁGUA (Cai como gota) */
+.particle-water {
+  animation: water-drop 0.8s forwards;
+}
+@keyframes water-drop {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(50px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* 3. RAIO (Treme e pisca) */
+.particle-electric {
+  animation: electric-jitter 0.6s forwards;
+}
+@keyframes electric-jitter {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(5px, -5px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-5px, 5px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* 4. TORNADO/VENTO (Gira) */
+.particle-wind {
+  animation: wind-spin 1s forwards;
+}
+@keyframes wind-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: rotate(360deg) scale(0);
+    opacity: 0;
+  }
+}
+
+/* 5. PADRÃO (Apenas diminui) */
+.particle-default,
+.particle-paw {
+  animation: fade-shrink 0.8s forwards;
+}
+@keyframes fade-shrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* --- IMPORTANTE: Esconder o mouse padrão --- */
+body.has-custom-cursor,
+body.has-custom-cursor * {
+  cursor: none !important;
+}
