@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./ArcadePage.css"; // Vamos criar este CSS
+import "./ArcadePage.css"; 
 
 const ArcadePage = () => {
   return (

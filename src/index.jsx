@@ -3,8 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-// --- ATUALIZE A IMPORTAÇÃO ---
-import { AppProvider } from "./contexts/AppContext"; // <-- Mude esta linha
+import { AppProvider } from "./contexts/AppContext"; 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
