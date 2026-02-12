@@ -1,39 +1,103 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { supabase } from "../../supabaseClient";
 import "./WordSearch.css";
 import { useApp } from "../../contexts/AppContext";
+import { useNavigate } from "react-router-dom";
 
-// --- Configuração do Jogo ---
-const wordLists = {
-  easy: ["REACT", "VUE", "CSS", "HTML", "NODE"],
-  medium: ["ANGULAR", "PYTHON", "JAVA", "SWIFT", "KOTLIN", "PHP", "RUST"],
-  hard: [
-    "JAVASCRIPT",
-    "TYPESCRIPT",
-    "SPRINGBOOT",
-    "LARAVEL",
-    "DJANGO",
-    "FLASK",
-    "NEXTJS",
-  ],
-  impossible: [
-    "MONGODB",
-    "POSTGRESQL",
+// --- BANCO DE PALAVRAS EXPANDIDO ---
+const ALL_WORDS = {
+  tech: [
+    "REACT",
+    "VUE",
+    "CSS",
+    "HTML",
+    "NODE",
+    "JAVA",
+    "PYTHON",
+    "RUBY",
+    "SWIFT",
+    "KOTLIN",
     "DOCKER",
-    "KUBERNETES",
-    "TERRAFORM",
+    "LINUX",
+    "CLOUD",
+    "API",
+    "JSON",
+    "GIT",
+    "SQL",
+    "REDIS",
+    "MONGO",
     "AWS",
-    "AZURE",
-    "GOLANG",
+  ],
+  nature: [
+    "ARVORE",
+    "FLOR",
+    "RIO",
+    "MAR",
+    "SOL",
+    "LUA",
+    "PEDRA",
+    "TERRA",
+    "VENTO",
+    "CHUVA",
+    "GRAMA",
+    "PEIXE",
+    "GATO",
+    "LEAO",
+    "TIGRE",
+    "ZEBRA",
+    "URSO",
+    "LOBO",
+  ],
+  food: [
+    "PIZZA",
+    "PAO",
+    "BOLO",
+    "SUCO",
+    "CAFE",
+    "ARROZ",
+    "FEIJAO",
+    "CARNE",
+    "FRUTA",
+    "UVA",
+    "MACA",
+    "PERA",
+    "DOCE",
+    "SAL",
+    "OVO",
+    "QUEIJO",
+    "LEITE",
+  ],
+  objects: [
+    "MESA",
+    "CADEIRA",
+    "CAMA",
+    "PORTA",
+    "JANELA",
+    "CARRO",
+    "MOTO",
+    "AVIAO",
+    "TREM",
+    "LIVRO",
+    "CANETA",
+    "PAPEL",
+    "COPO",
+    "PRATO",
+    "FACA",
   ],
 };
 
-const gridSizes = { easy: 10, medium: 12, hard: 14, impossible: 15 };
-
+// Configuração de Dificuldade
 const DIFFICULTIES = {
-  easy: { label: "Fácil (5 palavras)", reward: 50 },
-  medium: { label: "Média (7 palavras)", reward: 100 },
-  hard: { label: "Difícil (7 palavras)", reward: 150 },
-  impossible: { label: "Impossível (8 palavras)", reward: 250 },
+  easy: { label: "Fácil", size: 10, wordCount: 5, coins: 20, xp: 40 },
+  medium: { label: "Médio", size: 12, wordCount: 8, coins: 40, xp: 80 },
+  hard: { label: "Difícil", size: 14, wordCount: 12, coins: 80, xp: 150 },
+  impossible: {
+    label: "Impossível",
+    size: 16,
+    wordCount: 15,
+    coins: 150,
+    xp: 300,
+  },
 };
 
 const directions = [
@@ -47,7 +111,19 @@ const directions = [
   [-1, 1],
 ];
 
-// --- Funções Auxiliares de Geração ---
+// --- GERADOR DE JOGO ---
+const getRandomWords = (count) => {
+  // Junta todas as categorias em um array só
+  const all = [
+    ...ALL_WORDS.tech,
+    ...ALL_WORDS.nature,
+    ...ALL_WORDS.food,
+    ...ALL_WORDS.objects,
+  ];
+  // Embaralha e pega 'count' palavras
+  return all.sort(() => 0.5 - Math.random()).slice(0, count);
+};
+
 const fillGrid = (grid) => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let r = 0; r < grid.length; r++) {
@@ -63,8 +139,8 @@ const fillGrid = (grid) => {
 const placeWord = (grid, word) => {
   const size = grid.length;
   let placed = false;
-
-  for (let i = 0; i < 50 && !placed; i++) {
+  // Tenta 100 vezes colocar a palavra
+  for (let i = 0; i < 100 && !placed; i++) {
     const dir = directions[Math.floor(Math.random() * directions.length)];
     const r = Math.floor(Math.random() * size);
     const c = Math.floor(Math.random() * size);
@@ -85,9 +161,7 @@ const placeWord = (grid, word) => {
 
     if (canPlace) {
       for (let l = 0; l < word.length; l++) {
-        const newR = r + l * dir[0];
-        const newC = c + l * dir[1];
-        grid[newR][newC] = word[l];
+        grid[r + l * dir[0]][c + l * dir[1]] = word[l];
       }
       placed = true;
     }
@@ -95,85 +169,120 @@ const placeWord = (grid, word) => {
   return placed;
 };
 
-const generateGame = (difficulty) => {
-  const size = gridSizes[difficulty];
-  const words = wordLists[difficulty];
+const generateGame = (difficultyKey) => {
+  const config = DIFFICULTIES[difficultyKey];
+  const size = config.size;
+  // Garante palavras aleatórias a cada jogo
+  const wordsToPlace = getRandomWords(config.wordCount);
+
   let grid = Array(size)
     .fill(0)
     .map(() => Array(size).fill(null));
+  const finalWords = [];
 
-  const placedWords = [];
-  for (const word of words) {
+  for (const word of wordsToPlace) {
     if (placeWord(grid, word)) {
-      placedWords.push(word);
+      finalWords.push(word);
     }
   }
 
   grid = fillGrid(grid);
-  return { grid, words: placedWords };
+  return { grid, words: finalWords };
 };
 
-// --- Componente Principal ---
+// --- COMPONENTE PRINCIPAL ---
 const WordSearchGame = () => {
-  // Estados do Jogo
-  const [difficulty, setDifficulty] = useState("easy");
-  const [game, setGame] = useState(generateGame("easy"));
-  const [foundWords, setFoundWords] = useState([]);
-  const [foundCells, setFoundCells] = useState([]); // Células já encontradas (Verdes)
+  const navigate = useNavigate();
+  const { profile, addCoins, isAdmin } = useApp();
 
-  // Estados de Interação
+  // Estados
+  const [difficulty, setDifficulty] = useState("easy");
+  const [game, setGame] = useState(null); // Inicia null, gera no start
+  const [foundWords, setFoundWords] = useState([]);
+  const [foundCells, setFoundCells] = useState([]);
+
+  // Interação
   const [isSelecting, setIsSelecting] = useState(false);
   const [selection, setSelection] = useState([]);
   const selectionWord = useRef("");
 
-  // Estados de Controle
+  // Controle
   const [time, setTime] = useState(0);
   const timerRef = useRef(null);
-  const [gameState, setGameState] = useState("setup");
+  const [gameState, setGameState] = useState("setup"); // 'setup', 'playing', 'won'
+  const [showConfirmGiveUp, setShowConfirmGiveUp] = useState(false);
   const [rewardMessage, setRewardMessage] = useState("");
 
-  // Contexto Global
-  const { userCoins, addCoins, isAdmin } = useApp();
-
-  // Timer
+  // Iniciar Timer
   useEffect(() => {
     if (gameState === "playing") {
-      timerRef.current = setInterval(() => {
-        setTime((t) => t + 1);
-      }, 1000);
+      timerRef.current = setInterval(() => setTime((t) => t + 1), 1000);
     } else {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
   }, [gameState]);
 
-  // Lógica de Vitória (CORRIGIDA)
+  // Verificar Vitória
   useEffect(() => {
     if (
       gameState === "playing" &&
-      foundWords.length > 0 &&
-      foundWords.length === game.words.length &&
-      rewardMessage === "" // Trava para não repetir
+      game &&
+      foundWords.length === game.words.length
     ) {
-      setGameState("won");
-      const reward = DIFFICULTIES[difficulty].reward;
-      const timeBonus = Math.max(0, 60 - time) * 2;
-      const totalReward = reward + timeBonus;
-
-      addCoins(totalReward); // Adiciona ao banco
-      setRewardMessage(`Você achou tudo em ${time}s! +${totalReward} moedas!`);
+      handleGameEnd();
     }
-  }, [
-    foundWords,
-    game.words,
-    gameState,
-    time,
-    difficulty,
-    addCoins,
-    rewardMessage,
-  ]);
+  }, [foundWords, gameState, game]);
 
-  // --- Manipuladores de Mouse ---
+  // --- LÓGICA DE FIM DE JOGO ---
+  const handleGameEnd = async () => {
+    setGameState("won");
+
+    // Calcula recompensas
+    const config = DIFFICULTIES[difficulty];
+    const timeBonus = Math.max(0, 120 - time); // Bônus se terminar em menos de 2min
+    const totalCoins = config.coins + Math.floor(timeBonus / 10);
+
+    setRewardMessage(
+      `Tempo: ${time}s | +${totalCoins} Moedas | +${config.xp} XP`,
+    );
+
+    if (profile) {
+      try {
+        await supabase.rpc("increment_stats", {
+          user_id_input: profile.id,
+          coins_add: totalCoins,
+          xp_add: config.xp,
+        });
+        addCoins(totalCoins);
+      } catch (err) {
+        console.error("Erro ao salvar:", err);
+        addCoins(totalCoins); // Fallback visual
+      }
+    }
+  };
+
+  const handleGiveUp = async () => {
+    setShowConfirmGiveUp(false);
+    setGameState("setup"); // Volta pro menu do jogo
+
+    const penalty = 15;
+    if (profile) {
+      try {
+        await supabase.rpc("increment_stats", {
+          user_id_input: profile.id,
+          coins_add: -penalty,
+          xp_add: 0,
+        });
+        addCoins(-penalty);
+        alert(`Você desistiu. -${penalty} Moedas.`);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  // --- INTERAÇÃO COM O GRID ---
   const handleMouseDown = (r, c) => {
     if (gameState !== "playing") return;
     setIsSelecting(true);
@@ -183,24 +292,23 @@ const WordSearchGame = () => {
 
   const handleMouseEnter = (r, c) => {
     if (!isSelecting) return;
-
     const start = selection[0];
     const dr = r - start.r;
     const dc = c - start.c;
 
-    // Verifica se é uma linha reta ou diagonal válida
+    // Lógica para selecionar apenas em linha reta/diagonal
     if (Math.abs(dr) === Math.abs(dc) || dr === 0 || dc === 0) {
       const newSelection = [];
       const len = Math.max(Math.abs(dr), Math.abs(dc));
-      const unitDr = dr === 0 ? 0 : dr / len;
-      const unitDc = dc === 0 ? 0 : dc / len;
+      const uDr = dr === 0 ? 0 : dr / len;
+      const uDc = dc === 0 ? 0 : dc / len;
 
       let word = "";
       for (let i = 0; i <= len; i++) {
-        const newR = start.r + i * unitDr;
-        const newC = start.c + i * unitDc;
-        newSelection.push({ r: newR, c: newC });
-        word += game.grid[newR][newC];
+        const nr = start.r + i * uDr;
+        const nc = start.c + i * uDc;
+        newSelection.push({ r: nr, c: nc });
+        word += game.grid[nr][nc];
       }
       setSelection(newSelection);
       selectionWord.current = word;
@@ -212,59 +320,33 @@ const WordSearchGame = () => {
     setIsSelecting(false);
 
     const word = selectionWord.current;
-    const wordReversed = word.split("").reverse().join("");
+    const revWord = word.split("").reverse().join("");
 
-    const checkWord = (w) => {
-      return game.words.includes(w) && !foundWords.includes(w);
-    };
+    const check = (w) => game.words.includes(w) && !foundWords.includes(w);
 
-    let wordWasFound = false;
-    let foundWordString = "";
-
-    if (checkWord(word)) {
-      wordWasFound = true;
-      foundWordString = word;
-    } else if (checkWord(wordReversed)) {
-      wordWasFound = true;
-      foundWordString = wordReversed;
-    }
-
-    if (wordWasFound) {
-      setFoundWords((prev) => [...prev, foundWordString]);
+    if (check(word) || check(revWord)) {
+      const correctWord = check(word) ? word : revWord;
+      setFoundWords((prev) => [...prev, correctWord]);
       setFoundCells((prev) => [...prev, ...selection]);
     }
-
     setSelection([]);
     selectionWord.current = "";
   };
 
-  // --- Funções de Controle ---
+  // --- UI CONTROL ---
   const startGame = () => {
-    setGameState("playing");
-    setTime(0);
-  };
-
-  const restartGame = (newDifficulty) => {
-    const diff = newDifficulty || difficulty;
-    setDifficulty(diff);
-    setGame(generateGame(diff));
+    setGame(generateGame(difficulty));
     setFoundWords([]);
-    setSelection([]);
     setFoundCells([]);
-    setIsSelecting(false);
-    setGameState("setup");
+    setSelection([]);
     setTime(0);
-    setRewardMessage("");
+    setGameState("playing");
   };
 
-  // Classe CSS da célula
-  const getCellClassName = (r, c) => {
-    if (foundCells.some((cell) => cell.r === r && cell.c === c)) {
-      return "found";
-    }
-    if (selection.some((cell) => cell.r === r && cell.c === c)) {
+  const getCellClass = (r, c) => {
+    if (foundCells.some((cell) => cell.r === r && cell.c === c)) return "found";
+    if (selection.some((cell) => cell.r === r && cell.c === c))
       return "selected";
-    }
     return "";
   };
 
@@ -274,61 +356,108 @@ const WordSearchGame = () => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      {/* Moedas removidas daqui pois já estão no Header */}
+      {/* TOP BAR */}
+      <div className="top-bar">
+        <button className="action-text-btn" onClick={() => navigate("/jogos")}>
+          ← Voltar
+        </button>
+        {gameState === "playing" && (
+          <button
+            className="action-text-btn give-up-btn"
+            onClick={() => setShowConfirmGiveUp(true)}
+          >
+            🏳️ Desistir
+          </button>
+        )}
+      </div>
 
       <h1 className="ws-game-title">Caça-Palavras</h1>
 
       <div className="ws-main-area">
+        {/* LADO ESQUERDO: GRID */}
         <div
           className="ws-grid-wrapper"
-          style={{ "--grid-size": gridSizes[difficulty] }}
+          style={{ "--grid-size": game ? game.grid.length : 10 }}
         >
-          {/* ⭐ AQUI ESTÁ A CORREÇÃO ⭐ */}
-          <div className="ws-grid notranslate" translate="no">
-            {game.grid.map((row, r) =>
-              row.map((letter, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  className={`ws-cell ${getCellClassName(r, c)}`}
-                  onMouseDown={() => handleMouseDown(r, c)}
-                  onMouseEnter={() => handleMouseEnter(r, c)}
-                >
-                  {letter}
-                </div>
-              ))
-            )}
-          </div>
+          {gameState === "playing" ? (
+            <div className="ws-grid">
+              {game.grid.map((row, r) =>
+                row.map((char, c) => (
+                  <div
+                    key={`${r}-${c}`}
+                    className={`ws-cell ${getCellClass(r, c)}`}
+                    onMouseDown={() => handleMouseDown(r, c)}
+                    onMouseEnter={() => handleMouseEnter(r, c)}
+                  >
+                    {char}
+                  </div>
+                )),
+              )}
+            </div>
+          ) : (
+            // Placeholder vazio enquanto não joga
+            <div
+              style={{
+                width: 400,
+                height: 400,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#555",
+              }}
+            >
+              Escolha a dificuldade para começar
+            </div>
+          )}
 
+          {/* OVERLAYS (MENU / VITÓRIA) */}
           {gameState !== "playing" && (
             <div className="ws-overlay">
               {gameState === "setup" && (
                 <div className="ws-setup">
-                  <h2>Caça-Palavras</h2>
+                  <h2>Nova Partida</h2>
                   <div className="difficulty-selector ws">
-                    {Object.keys(DIFFICULTIES).map((level) => (
-                      <button
-                        key={level}
-                        className={difficulty === level ? "active" : ""}
-                        onClick={() => restartGame(level)}
-                      >
-                        {DIFFICULTIES[level].label}
-                      </button>
-                    ))}
+                    {Object.keys(DIFFICULTIES).map((key) => {
+                      // Trava impossível para não admins (opcional)
+                      const isLocked = key === "impossible" && !isAdmin;
+                      return (
+                        <button
+                          key={key}
+                          className={difficulty === key ? "active" : ""}
+                          onClick={() => setDifficulty(key)}
+                          disabled={isLocked}
+                        >
+                          <span>{DIFFICULTIES[key].label}</span>
+                          <span style={{ fontSize: "0.8rem", opacity: 0.7 }}>
+                            {DIFFICULTIES[key].wordCount} palavras
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                   <button className="ws-start-button" onClick={startGame}>
-                    Começar
+                    JOGAR
                   </button>
                 </div>
               )}
+
               {gameState === "won" && (
                 <div className="ws-won-screen">
-                  <h2>Parabéns!</h2>
-                  <h3>{rewardMessage}</h3>
+                  <h2>Parabéns! 🎉</h2>
+                  <p
+                    style={{
+                      marginBottom: "20px",
+                      fontSize: "1.2rem",
+                      color: "#ccc",
+                    }}
+                  >
+                    {rewardMessage}
+                  </p>
                   <button
                     className="ws-start-button"
-                    onClick={() => restartGame()}
+                    onClick={() => setGameState("setup")}
                   >
-                    Jogar Novamente
+                    Menu Principal
                   </button>
                 </div>
               )}
@@ -336,23 +465,53 @@ const WordSearchGame = () => {
           )}
         </div>
 
-        <div className="ws-info-panel">
-          <h3>Encontre as Palavras:</h3>
-          <ul className="ws-word-list">
-            {game.words.map((word) => (
-              <li
-                key={word}
-                className={foundWords.includes(word) ? "found" : ""}
-              >
-                {word}
-              </li>
-            ))}
-          </ul>
-          <div className="ws-timer">
-            Tempo: <strong>{time}s</strong>
+        {/* LADO DIREITO: LISTA DE PALAVRAS */}
+        {gameState === "playing" && (
+          <div className="ws-info-panel">
+            <h3>
+              Palavras ({foundWords.length}/{game.words.length})
+            </h3>
+            <ul className="ws-word-list">
+              {game.words.map((w) => (
+                <li key={w} className={foundWords.includes(w) ? "found" : ""}>
+                  {w}
+                </li>
+              ))}
+            </ul>
+            <div className="ws-timer">
+              Tempo: <strong>{time}s</strong>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAL DESISTIR */}
+      {showConfirmGiveUp && (
+        <div className="game-modal">
+          <h2>Desistir?</h2>
+          <p>
+            Você perderá <strong>15 Moedas</strong>.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <button
+              className="modal-btn"
+              onClick={() => setShowConfirmGiveUp(false)}
+              style={{ background: "#555" }}
+            >
+              Cancelar
+            </button>
+            <button className="modal-btn danger" onClick={handleGiveUp}>
+              Sim, Desistir
+            </button>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

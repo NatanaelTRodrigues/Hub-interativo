@@ -4,7 +4,7 @@ import { useApp } from "../../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
 import "./TermoGame.css";
 
-// Lista de palavras
+// LISTA CORRIGIDA (Apenas 5 letras)
 const WORDS = [
   "TERMO",
   "NOBRE",
@@ -52,26 +52,79 @@ const WORDS = [
   "ZEBRA",
   "COBRA",
   "AGUIA",
-  "LIXO",
-  "SOLO",
+  "SUJOS",
+  "LIMPO",
+  "AUDIO",
+  "VIDEO",
+  "RADIO",
+  "LISTA",
+  "PORTA",
+  "MESA",
+  "NAVIO",
+  "PEDRA",
+  "CASAS",
+  "FALAR",
+  "ANDAR",
+  "COMER",
+  "BEBER",
+  "OUVIR",
+  "SENTI",
+  "PRAIA",
+  "CAMPO",
+  "CIDADE",
+  "RISCO",
+  "VALOR",
+  "CORPO",
+  "MENTE",
+  "ALMAS",
+  "RISOS",
+  "CHUVA",
+  "VENTO",
+  "NEVES",
+  "AREIA",
+  "FOLHA",
+  "GALHO",
+  "TRONC",
+  "FRUTO",
+  "PEIXE",
+  "AVIAO",
+  "CARRO",
+  "TRENO",
+  "MOTOR",
+  "RODAR",
+  "CORDA",
+  "PONTE",
+  "TELHA",
+  "PAREI",
+  "ABRIR",
+  "FECHAR",
+  "UNIAO",
+  "PAZES",
+  "GUERRA",
+  "MEDOS",
+  "CULPA",
+  "FELIZ",
+  "TRIST",
+  "BRAVO",
+  "CALMO",
+  "LENTO",
+  "RAPID",
+  "CERTO",
+  "ERRAR",
 ];
 
 const TermoGame = () => {
   const navigate = useNavigate();
-  // CORREÇÃO 1: Usamos 'addCoins' e pegamos 'isAdmin'
   const { profile, addCoins, isAdmin } = useApp();
 
-  // --- CONFIGURAÇÃO DE RECOMPENSAS (Edite aqui) ---
   const REWARDS = {
     daily: { winCoins: 100, winXP: 200, lossCoins: -90, lossXP: 100 },
     infinite: { winCoins: 5, winXP: 5, lossCoins: -5, lossXP: 5 },
     giveUpPenalty: 15,
   };
 
-  // --- ESTADOS GERAIS ---
-  const [mode, setMode] = useState("infinite"); // 'infinite' ou 'daily'
+  const [mode, setMode] = useState("infinite");
 
-  // Estados do Jogo
   const [solution, setSolution] = useState("");
   const [guesses, setGuesses] = useState(Array(6).fill(""));
   const [currentRow, setCurrentRow] = useState(0);
@@ -79,15 +132,11 @@ const TermoGame = () => {
   const [selectedCol, setSelectedCol] = useState(0);
 
   const [gameOver, setGameOver] = useState(false);
-  const [gameResult, setGameResult] = useState(""); // 'won', 'lost', 'giveup'
+  const [gameResult, setGameResult] = useState("");
   const [rewardClaimed, setRewardClaimed] = useState(false);
   const [keyboardStatus, setKeyboardStatus] = useState({});
   const [showConfirmReset, setShowConfirmReset] = useState(false);
-
-  // Novo estado: Bloqueio do Diário
   const [dailyFinished, setDailyFinished] = useState(false);
-
-  // --- INICIALIZAÇÃO E PERSISTÊNCIA ---
 
   useEffect(() => {
     loadGameState(mode);
@@ -111,15 +160,12 @@ const TermoGame = () => {
     const storageKey = `termo_state_${selectedMode}_${profile?.id || "guest"}`;
     const saved = localStorage.getItem(storageKey);
 
-    // Verifica bloqueio do diário imediatamente
     if (selectedMode === "daily") {
       const dailyKey = `termo_daily_done_${profile?.id || "guest"}`;
       const lastPlayedDate = localStorage.getItem(dailyKey);
 
-      // Se já jogou hoje e NÃO é admin, bloqueia
       if (lastPlayedDate === today && !isAdmin) {
         setDailyFinished(true);
-        // Mesmo bloqueado, tentamos carregar o estado para mostrar o resultado
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed.date === today) {
@@ -137,12 +183,10 @@ const TermoGame = () => {
 
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Se for diário e a data for antiga, reseta
       if (selectedMode === "daily" && parsed.date !== today) {
         initNewGame(selectedMode, true);
         return;
       }
-
       setSolution(parsed.solution);
       setGuesses(parsed.guesses);
       setCurrentRow(parsed.currentRow);
@@ -177,6 +221,10 @@ const TermoGame = () => {
   };
 
   const initNewGame = (selectedMode, isLoad = false) => {
+    // --- CORREÇÃO DE SEGURANÇA ---
+    // Filtra para garantir APENAS palavras de 5 letras
+    const validWords = WORDS.filter((word) => word.length === 5);
+
     let newWord = "";
     const today = new Date().toISOString().slice(0, 10);
 
@@ -184,10 +232,10 @@ const TermoGame = () => {
       let hash = 0;
       for (let i = 0; i < today.length; i++)
         hash = today.charCodeAt(i) + ((hash << 5) - hash);
-      const index = Math.abs(hash) % WORDS.length;
-      newWord = WORDS[index];
+      const index = Math.abs(hash) % validWords.length;
+      newWord = validWords[index];
     } else {
-      newWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+      newWord = validWords[Math.floor(Math.random() * validWords.length)];
     }
 
     setSolution(newWord);
@@ -200,7 +248,6 @@ const TermoGame = () => {
     setRewardClaimed(false);
     setSelectedCol(0);
 
-    // Se estiver mudando para infinito, garante que não está bloqueado
     if (selectedMode === "infinite") setDailyFinished(false);
 
     if (!isLoad) {
@@ -221,8 +268,6 @@ const TermoGame = () => {
       );
     }
   };
-
-  // --- CONTROLES E INPUT ---
 
   const firstEmptyIndex = (arr) => {
     const idx = arr.findIndex((c) => c === "");
@@ -276,8 +321,6 @@ const TermoGame = () => {
     if (!gameOver && !dailyFinished) setSelectedCol(index);
   };
 
-  // --- LÓGICA DE JOGO ---
-
   const submitGuess = async () => {
     if (currentGuessArr.some((l) => l === "")) return;
     const guessString = currentGuessArr.join("");
@@ -317,7 +360,6 @@ const TermoGame = () => {
     setGameOver(true);
     setGameResult(result);
 
-    // Se for modo diário, marca como concluído no localStorage
     if (mode === "daily") {
       const today = new Date().toISOString().slice(0, 10);
       localStorage.setItem(`termo_daily_done_${profile?.id || "guest"}`, today);
@@ -331,12 +373,10 @@ const TermoGame = () => {
     finishGame("giveup");
   };
 
-  // --- ECONOMIA CORRIGIDA ---
   const applyEconomy = async (result) => {
     if (rewardClaimed || !profile) return;
     setRewardClaimed(true);
 
-    // 1. Definição de Valores baseados no Modo e Resultado
     let coins = 0;
     let xp = 0;
 
@@ -353,12 +393,7 @@ const TermoGame = () => {
       xp = 0;
     }
 
-    console.log(
-      `Finalizando jogo. Modo: ${mode}, Resultado: ${result}. Coins: ${coins}, XP: ${xp}`,
-    );
-
     try {
-      // 2. Tenta RPC (Seguro)
       const { error: rpcError } = await supabase.rpc("increment_stats", {
         user_id_input: profile.id,
         coins_add: coins,
@@ -367,13 +402,9 @@ const TermoGame = () => {
 
       if (rpcError) throw rpcError;
 
-      console.log("Sucesso RPC!");
-
-      // 3. Atualiza Visualmente (CORRIGIDO: Usando addCoins do Contexto)
       addCoins(coins);
     } catch (err) {
       console.log("Falha no RPC, tentando update manual...", err.message);
-      // Fallback
       await supabase
         .from("usuarios")
         .update({
@@ -389,14 +420,39 @@ const TermoGame = () => {
   };
 
   const getTileStatus = (rowIndex, colIndex) => {
-    if (rowIndex < currentRow) {
-      const guess = guesses[rowIndex];
-      const letter = guess[colIndex];
-      if (letter === solution[colIndex]) return "correct";
-      if (solution.includes(letter)) return "present";
-      return "absent";
+    if (rowIndex >= currentRow) return "";
+
+    const guess = guesses[rowIndex];
+    if (!guess) return "";
+
+    const letter = guess[colIndex];
+    if (!letter) return "";
+
+    if (letter === solution[colIndex]) {
+      return "correct";
     }
-    return "";
+
+    if (solution.includes(letter)) {
+      const solutionCount = solution.split(letter).length - 1;
+      let correctCount = 0;
+      for (let i = 0; i < 5; i++) {
+        if (guesses[rowIndex][i] === letter && solution[i] === letter) {
+          correctCount++;
+        }
+      }
+      let currentOccurrence = 0;
+      for (let i = 0; i < colIndex; i++) {
+        if (guesses[rowIndex][i] === letter && solution[i] !== letter) {
+          currentOccurrence++;
+        }
+      }
+
+      if (currentOccurrence < solutionCount - correctCount) {
+        return "present";
+      }
+    }
+
+    return "absent";
   };
 
   return (
@@ -420,7 +476,6 @@ const TermoGame = () => {
           TERMO {mode === "daily" ? "DIÁRIO" : "INFINITO"}
         </h1>
 
-        {/* Trava o botão Diário se já foi finalizado e não é admin */}
         <div className="mode-switch">
           <button
             className={`mode-btn ${mode === "infinite" ? "active" : ""}`}
@@ -437,7 +492,6 @@ const TermoGame = () => {
         </div>
       </div>
 
-      {/* --- TELA DE BLOQUEIO DO DIÁRIO --- */}
       {dailyFinished && mode === "daily" && !gameOver ? (
         <div className="daily-locked-message">
           <h2>Você já jogou o Desafio Diário hoje!</h2>

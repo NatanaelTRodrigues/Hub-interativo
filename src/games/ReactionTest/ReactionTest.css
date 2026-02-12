@@ -1,13 +1,56 @@
+/* src/pages/games/ReactionTest.css */
+
 .reaction-game-container {
   display: flex;
+  flex-direction: column; /* Mudado para coluna para caber a TopBar */
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   background-color: #121212;
   color: #fff;
   padding: 2rem;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+/* --- TOP BAR (Novo) --- */
+.top-bar {
+  width: 100%;
+  max-width: 1100px; /* Alinhado com a largura total do jogo */
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.action-text-btn {
+  background: none;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-text-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: #666;
+}
+
+/* --- ÁREA DO JOGO --- */
+.reaction-content-wrapper {
+  display: flex;
   gap: 2rem;
-  box-sizing: border-box; /* Garante que o padding não estoure */
+  width: 100%;
+  max-width: 1100px;
+  justify-content: center;
+  align-items: stretch; /* Estica altura */
 }
 
 /* Caixa principal do jogo */
@@ -19,8 +62,7 @@
 }
 
 .reaction-box {
-  width: 90%;
-  max-width: 800px;
+  width: 100%;
   height: 500px;
   border-radius: 20px;
   display: flex;
@@ -29,84 +71,92 @@
   justify-content: center;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  padding: 20px;
+}
+
+.reaction-box:active {
+  transform: scale(0.98);
 }
 
 .reaction-message {
   font-size: 3rem;
   font-weight: bold;
   color: #fff;
+  margin-bottom: 10px;
 }
 
 .reaction-time {
-  font-size: 4rem;
+  font-size: 5rem;
   color: #fff;
   margin: 0;
+  font-family: monospace;
+}
+
+.result-details {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .coin-result {
   font-size: 1.5rem;
-  color: #ffd700;
-  margin-top: 1rem;
-  font-weight: 500;
+  font-weight: bold;
 }
 
-/* Cor para moedas ganhas (na tela principal) */
+.xp-result {
+  font-size: 1.2rem;
+  color: #00e676; /* Verde XP */
+  font-weight: bold;
+}
+
 .coin-result.positive {
-  color: #ffd700; /* Amarelo/Ouro */
-}
-
-/* Cor para moedas perdidas (na tela principal) */
-.coin-result.negative {
-  color: #ff8787; /* Vermelho claro */
-}
-
-/* Ajuste no placar lateral (ranking) */
-.reaction-ranking li .coins-plus {
   color: #ffd700;
-  font-weight: bold;
 }
-.reaction-ranking li .coins-minus {
-  color: #c92a2a; /* Vermelho escuro */
-  font-weight: bold;
+.coin-result.negative {
+  color: #ff8787;
 }
 
 /* --- ESTADOS DO JOGO (Cores) --- */
-
 .reaction-box.waiting {
-  background-color: #c92a2a; /* Vermelho */
-  border: 5px solid #a61e1e;
+  background-color: #2a2a2a; /* Cinza escuro (Neutro) */
+  border: 5px solid #444;
 }
 .reaction-box.waiting:hover {
-  background-color: #e03131;
+  background-color: #333;
 }
 
 .reaction-box.ready {
-  background-color: #e8590c; /* Laranja */
-  border: 5px solid #c94c0a;
+  background-color: #c92a2a; /* Vermelho (Espere) */
+  border: 5px solid #a61e1e;
   cursor: not-allowed;
 }
 
 .reaction-box.go {
-  background-color: #2f9e44; /* Verde */
+  background-color: #2f9e44; /* Verde (Clique!) */
   border: 5px solid #2b8a3e;
 }
 
 .reaction-box.result {
-  background-color: #1971c2; /* Azul */
+  background-color: #1971c2; /* Azul (Resultado) */
   border: 5px solid #1864ab;
 }
 
 /* --- Ranking Lateral --- */
 .reaction-ranking {
-  flex-shrink: 0; /* Não encolhe */
+  flex-shrink: 0;
   width: 300px;
-  height: 500px;
   background-color: #1a1a1a;
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
 }
 
 .reaction-ranking h3 {
@@ -116,6 +166,7 @@
   margin-bottom: 1.5rem;
   border-bottom: 2px solid #333;
   padding-bottom: 0.5rem;
+  color: #4d90fe;
 }
 
 .reaction-ranking ul {
@@ -128,12 +179,8 @@
   display: flex;
   justify-content: space-between;
   font-size: 1.1rem;
-  padding: 0.5rem 0;
+  padding: 0.8rem 0;
   border-bottom: 1px solid #2a2a2a;
-}
-
-.reaction-ranking li span:first-child {
-  font-weight: 500;
 }
 
 .reaction-ranking li .coins-plus {
@@ -141,6 +188,26 @@
   font-weight: bold;
 }
 .reaction-ranking li .coins-minus {
-  color: #c92a2a;
+  color: #ff8787;
   font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .reaction-content-wrapper {
+    flex-direction: column;
+  }
+  .reaction-ranking {
+    width: 100%;
+    height: auto;
+  }
+  .reaction-box {
+    height: 300px;
+  }
+  .reaction-message {
+    font-size: 2rem;
+  }
+  .reaction-time {
+    font-size: 3rem;
+  }
 }
