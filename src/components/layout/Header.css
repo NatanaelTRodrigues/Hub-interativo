@@ -15,7 +15,7 @@
 
 .header-container {
   width: 100%;
-  max-width: 1400px; /* Aumentei para caber mais nomes */
+  max-width: 1400px;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -57,7 +57,7 @@
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
-/* --- ÁREA DO USUÁRIO --- */
+/* --- ÁREA DO USUÁRIO E MOEDAS --- */
 .user-area {
   display: flex;
   align-items: center;
@@ -66,6 +66,12 @@
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.currencies-wrapper {
+  display: flex;
+  gap: 10px; /* Espaço entre Moedas e Rubys */
+}
+
+/* Badge Dourado (Moedas) */
 .coin-badge {
   background-color: rgba(255, 215, 0, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.3);
@@ -81,6 +87,24 @@
   font-weight: bold;
 }
 
+/* ⭐ Badge Rosa/Vermelho (nRubys) ⭐ */
+.ruby-badge {
+  background-color: rgba(233, 30, 99, 0.1);
+  border: 1px solid rgba(233, 30, 99, 0.4);
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(233, 30, 99, 0.2);
+}
+.ruby-value {
+  color: #ff4081; /* Rosa Neon */
+  font-weight: bold;
+}
+
+
 /* Menu do Usuário */
 .user-menu-wrapper {
   position: relative;
@@ -94,7 +118,6 @@
   padding: 5px 10px;
   border-radius: 30px;
   transition: background-color 0.2s;
-  /* CORREÇÃO DO NOME: Removemos max-width e overflow */
 }
 .user-info:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -117,7 +140,7 @@
   color: #aaa;
 }
 
-/* Dropdown (igual ao anterior) */
+/* Dropdown */
 .dropdown-menu {
   position: absolute;
   top: 140%;
@@ -176,7 +199,7 @@
 .requests-section {
   background: rgba(40, 40, 40, 0.95);
   border: 1px solid #444;
-  border-left: 3px solid #ffca28; /* Faixa amarela de alerta */
+  border-left: 3px solid #ffca28;
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 15px;
@@ -270,12 +293,6 @@
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

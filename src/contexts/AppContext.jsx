@@ -155,7 +155,7 @@ export const AppProvider = ({ children }) => {
     return publicUrl;
   };
 
-  // --- Funções de Jogo/Loja ---
+  // --- Funções de Jogo/Loja/Economia ---
   const addCoins = async (amount) => {
     if (!profile) return;
     const newCoinTotal = profile.moedas + amount;
@@ -165,6 +165,18 @@ export const AppProvider = ({ children }) => {
       .eq("id", profile.id);
     if (error) console.error("Erro moedas:", error);
     else setProfile({ ...profile, moedas: newCoinTotal });
+  };
+
+  // ⭐ NOVO: Função para adicionar/remover nRubys ⭐
+  const addRubys = async (amount) => {
+    if (!profile) return;
+    const newRubyTotal = (profile.nrubys || 0) + amount;
+    const { error } = await supabase
+      .from("usuarios")
+      .update({ nrubys: newRubyTotal })
+      .eq("id", profile.id);
+    if (error) console.error("Erro nRubys:", error);
+    else setProfile({ ...profile, nrubys: newRubyTotal });
   };
 
   const buyItem = async (item) => {
@@ -332,11 +344,13 @@ export const AppProvider = ({ children }) => {
     session,
     profile,
     userCoins: profile?.moedas ?? 0,
+    userRubys: profile?.nrubys ?? 0, // ⭐ NOVO: Exportando os nRubys
     inventory,
     storeItems,
     loading,
     isAdmin,
     addCoins,
+    addRubys, // ⭐ NOVO: Exportando função
     buyItem,
     equipItem,
     adminAddCoins,

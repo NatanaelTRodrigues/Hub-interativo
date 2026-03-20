@@ -7,7 +7,8 @@ import { supabase } from "../../supabaseClient";
 import "./Header.css";
 
 const Header = () => {
-  const { profile, session, userCoins, logout, isAdmin } = useApp();
+  // ⭐ NOVO: Puxando o userRubys do context
+  const { profile, session, userCoins, userRubys, logout, isAdmin } = useApp();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = React.useState(null);
@@ -69,9 +70,18 @@ const Header = () => {
 
           {session ? (
             <div className="user-area">
-              <div className="coin-badge">
-                <span className="coin-value">{userCoins}</span>
-                <span className="coin-icon">💰</span>
+              
+              {/* ⭐ NOVO: Wrapper para as duas moedas juntas ⭐ */}
+              <div className="currencies-wrapper">
+                <div className="coin-badge" title="Suas Moedas">
+                  <span className="coin-value">{userCoins}</span>
+                  <span className="coin-icon">💰</span>
+                </div>
+
+                <div className="ruby-badge" title="Seus nRubys">
+                  <span className="ruby-value">{userRubys}</span>
+                  <span className="ruby-icon">💎</span>
+                </div>
               </div>
 
               <div
