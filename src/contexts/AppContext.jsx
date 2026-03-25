@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from '../supabaseClient';
+
 
 const AppContext = createContext();
 
@@ -167,33 +168,48 @@ export const AppProvider = ({ children }) => {
     else setProfile({ ...profile, moedas: newCoinTotal });
   };
 
-  // ⭐ NOVO: Função para adicionar/remover nRubys ⭐
+
   const addRubys = async (amount) => {
     if (!profile) return;
-    const newRubyTotal = (profile.nrubys || 0) + amount;
+    const newRubyTotal = (profile.nRubys || 0) + amount;
     const { error } = await supabase
       .from("usuarios")
-      .update({ nrubys: newRubyTotal })
+      .update({ nRubys: newRubyTotal })
       .eq("id", profile.id);
     if (error) console.error("Erro nRubys:", error);
-    else setProfile({ ...profile, nrubys: newRubyTotal });
+    else setProfile({ ...profile, nRubys: newRubyTotal });
   };
 
-  const buyItem = async (item) => {
+const buyItem = async (item, currency = 'moedas') => {
     if (!profile) {
       alert("Faça login para comprar!");
       return false;
     }
+
+    const useRubys = currency === 'nrubys';
+
+    // Chama o banco passando a escolha
     const { data, error } = await supabase.rpc("handle_purchase_item", {
       item_id_to_buy: item.id,
+      use_rubys: useRubys
     });
+
     if (error) {
       alert(`Erro: ${error.message}`);
       return false;
     }
+
     if (data.success) {
       alert(data.message);
-      setProfile((p) => ({ ...p, moedas: p.moedas - item.preco }));
+      
+      // Atualiza o saldo localmente na tela
+      if (useRubys) {
+        const rubyCost = Math.max(1, Math.floor(item.preco / 10)); // Mesma conversão do banco
+        setProfile((p) => ({ ...p, nrubys: p.nrubys - rubyCost }));
+      } else {
+        setProfile((p) => ({ ...p, moedas: p.moedas - item.preco }));
+      }
+      
       setInventory((i) => [...i, item.id]);
       return true;
     } else {
@@ -201,7 +217,6 @@ export const AppProvider = ({ children }) => {
       return false;
     }
   };
-
   // --- FUNÇÃO DE EQUIPAR/DESEQUIPAR ---
   const equipItem = async (item) => {
     if (!profile) return;
@@ -344,13 +359,13 @@ export const AppProvider = ({ children }) => {
     session,
     profile,
     userCoins: profile?.moedas ?? 0,
-    userRubys: profile?.nrubys ?? 0, // ⭐ NOVO: Exportando os nRubys
+    userRubys: profile?.nRubys ?? 0, 
     inventory,
     storeItems,
     loading,
     isAdmin,
     addCoins,
-    addRubys, // ⭐ NOVO: Exportando função
+    addRubys, 
     buyItem,
     equipItem,
     adminAddCoins,

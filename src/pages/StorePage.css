@@ -1,0 +1,237 @@
+/* src/pages/StorePage.css */
+
+.store-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #121212;
+  color: #fff;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+}
+
+/* --- HEADER DA LOJA --- */
+.store-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.store-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #4d90fe;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(77, 144, 254, 0.4);
+}
+
+.store-subtitle {
+  color: #aaa;
+  font-size: 1.1rem;
+}
+
+.admin-badge {
+  display: inline-block;
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid #ff6b6b;
+  font-weight: bold;
+  margin-top: 10px;
+  animation: pulse 2s infinite;
+}
+
+/* Saldos no topo da loja */
+.store-balances {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.balance-pill {
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.balance-pill.coin {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.balance-pill.ruby {
+  background: rgba(233, 30, 99, 0.1);
+  border: 1px solid #e91e63;
+  color: #ff4081;
+  box-shadow: 0 0 15px rgba(233, 30, 99, 0.2);
+}
+
+/* --- SEÇÕES DE CATEGORIA (NOVO) --- */
+.store-category-section {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 4rem;
+}
+
+.category-title {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-transform: capitalize;
+}
+
+/* --- GRID DE CARDS --- */
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  width: 100%;
+}
+
+/* --- CARDS --- */
+.store-card {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.store-card:hover {
+  transform: translateY(-5px);
+  border-color: #555;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Efeito de brilho no topo do card */
+.store-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #4d90fe, #00d4ff);
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+.store-card:hover::before { opacity: 1; }
+
+.store-card.admin-item::before { background: linear-gradient(90deg, #ff5252, #ff1744); }
+.store-card.owned-card { opacity: 0.7; border-color: #2f9e44; }
+.store-card.owned-card::before { background: #2f9e44; }
+
+/* Infos do Card */
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  text-align: center;
+  background: #252525;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 15px auto;
+  border: 1px solid #333;
+}
+
+.card-info {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.item-type {
+  font-size: 0.75rem;
+  color: #4d90fe;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.item-name {
+  font-size: 1.3rem;
+  margin: 10px 0 15px 0;
+  color: #fff;
+}
+
+/* Badges de Status (Grátis / Adquirido) */
+.status-badge {
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+.status-badge.owned { background: rgba(47, 158, 68, 0.2); color: #00e676; border: 1px solid #00e676; }
+.status-badge.free { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid #fff; }
+
+/* --- AÇÕES DE COMPRA --- */
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-buy {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-buy:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.btn-coin {
+  background: linear-gradient(135deg, #fbc531, #f59f00);
+  color: #000;
+}
+.btn-coin:not(:disabled):hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(245, 159, 0, 0.4); }
+
+.btn-ruby {
+  background: linear-gradient(135deg, #ff4081, #e91e63);
+  color: #fff;
+}
+.btn-ruby:not(:disabled):hover { transform: scale(1.03); box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4); }
+
+.btn-free {
+  background: #4d90fe;
+  color: #fff;
+}
+.btn-free:not(:disabled):hover { transform: scale(1.03); background: #3a7bd5; }
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+}
